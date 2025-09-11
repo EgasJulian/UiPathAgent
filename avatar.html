@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyGen Streaming Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.4);
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .video-container {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            aspect-ratio: 16/9;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .video-container:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 
+                0 12px 48px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(102, 126, 234, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 18px;
+            /* Sin filtros - video original de HeyGen */
+        }
+        
+        /* Estilos para controles de filtro de video */
+        .video-filter-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .video-filter-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: scale(1.1);
+        }
+        
+        .video-filter-btn.active {
+            background: rgba(102, 126, 234, 0.8);
+            border-color: rgba(102, 126, 234, 1);
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-card h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: #22c55e;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+            margin: 0 -8px;
+            padding: 12px 8px;
+            border-radius: 8px;
+        }
+
+        .status-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .status-value {
+            color: #ffffff;
+            font-weight: 600;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        button {
+            padding: 14px 24px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(239, 68, 68, 0.4);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #16a34a;
+        }
+
+        .task-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-section h3 {
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        /* Tabs para modos de entrada */
+        .input-mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-button:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Panel de contenido para cada modo */
+        .input-panel {
+            display: none;
+        }
+
+        .input-panel.active {
+            display: block;
+        }
+
+        /* Estilos para el modo audio */
+        .audio-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(239, 68, 68, 0.3);
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+        }
+
+        .record-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 12px 48px rgba(239, 68, 68, 0.5);
+        }
+
+        .record-button.recording {
+            animation: pulse-record 1.5s infinite;
+            border-color: #ef4444;
+        }
+
+        @keyframes pulse-record {
+            0%, 100% { 
+                box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 12px 48px rgba(239, 68, 68, 0.8);
+                transform: scale(1.02);
+            }
+        }
+
+        .record-status {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95em;
+            min-height: 20px;
+        }
+
+        .transcription-preview {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            color: #ffffff;
+            min-height: 60px;
+            font-style: italic;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .transcription-preview.empty {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1em;
+            min-height: 120px;
+            color: #ffffff;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .log-section {
+            background: rgba(30, 41, 59, 0.6);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            max-height: 220px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .log-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-section::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .log-section::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 3px;
+        }
+
+        .log-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .log-entry {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85em;
+            padding: 4px 0;
+            border-left: 2px solid #667eea;
+            padding-left: 10px;
+            margin-bottom: 5px;
+        }
+
+        .log-entry.error {
+            border-left-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .log-entry.success {
+            border-left-color: #22c55e;
+            color: #86efac;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                margin: 0;
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group button {
+                min-width: auto;
+            }
+            
+            .video-container {
+                min-height: 300px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 HeyGen Streaming Client</h1>
+            <p>Control de sesiones de streaming con WebRTC</p>
+        </div>
+
+        <div class="main-content">
+            <div class="video-section">
+                <div class="video-container">
+                    <!-- Video original (oculto, usado como fuente) -->
+                    <video id="remoteVideo" autoplay playsinline muted="false" style="display: none;"></video>
+                    
+                    <!-- Canvas para procesamiento de chroma key -->
+                    <canvas id="videoCanvas" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px; display: none;"></canvas>
+                    
+                    <!-- Video mostrado (fallback o modo original) -->
+                    <video id="displayVideo" autoplay playsinline muted="false" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px; display: none;"></video>
+                    
+                    <div id="videoPlaceholder" style="position: absolute; text-align: center; color: #94a3b8;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                            <line x1="7" y1="2" x2="7" y2="22"></line>
+                            <line x1="17" y1="2" x2="17" y2="22"></line>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <line x1="2" y1="7" x2="7" y2="7"></line>
+                            <line x1="2" y1="17" x2="7" y2="17"></line>
+                            <line x1="17" y1="17" x2="22" y2="17"></line>
+                            <line x1="17" y1="7" x2="22" y2="7"></line>
+                        </svg>
+                        <p style="margin-top: 10px;">Video Stream</p>
+                    </div>
+                    
+                    <!-- Controles de chroma key -->
+                    <div id="videoControls" style="position: absolute; top: 10px; right: 10px; display: none; gap: 8px; flex-direction: column;">
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="toggleVideoMode('original')" class="video-filter-btn" title="Video Original">
+                                🎬
+                            </button>
+                            <button onclick="toggleVideoMode('chromakey')" class="video-filter-btn active" title="Chroma Key">
+                                🎯
+                            </button>
+                        </div>
+                        
+                        <!-- Controles de ajuste (solo visible en modo chroma key) -->
+                        <div id="chromaControls" style="background: rgba(0,0,0,0.7); padding: 8px; border-radius: 8px; display: none;">
+                            <div style="margin-bottom: 4px; font-size: 11px; color: white;">Tolerancia</div>
+                            <input type="range" id="toleranceSlider" min="10" max="100" value="30" style="width: 80px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="log-section">
+                    <h3>📋 Logs del Sistema</h3>
+                    <div id="logContainer"></div>
+                </div>
+            </div>
+
+            <div class="controls-section">
+                <div class="task-section">
+                    <h3>💬 Enviar Mensaje al Avatar</h3>
+                    
+                    <!-- Tabs para alternar entre modos -->
+                    <div class="input-mode-tabs">
+                        <button class="tab-button active" onclick="switchInputMode('text')" id="textTab">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            Texto
+                        </button>
+                        <button class="tab-button" onclick="switchInputMode('audio')" id="audioTab">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1c-4.7 0-8.5 3.8-8.5 8.5 0 1.5.4 2.9 1 4.1"></path>
+                                <path d="M19.5 9.5c0-4.7-3.8-8.5-8.5-8.5"></path>
+                                <circle cx="12" cy="12" r="2"></circle>
+                            </svg>
+                            Audio
+                        </button>
+                    </div>
+
+                    <!-- Panel de modo texto -->
+                    <div class="input-panel active" id="textPanel">
+                        <textarea id="taskText" placeholder="Escribe el texto que el avatar debe repetir...">Hola, ¿quien eres?</textarea>
+                        <button id="sendTaskBtn" class="btn-primary" onclick="sendTask()" disabled style="margin-top: 10px; width: 100%;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            Enviar Texto
+                        </button>
+                    </div>
+
+                    <!-- Panel de modo audio -->
+                    <div class="input-panel" id="audioPanel">
+                        <div class="audio-controls">
+                            <button id="recordBtn" class="record-button" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" disabled>
+                                🎤
+                            </button>
+                            <div class="record-status" id="recordStatus">
+                                Mantén presionado para grabar
+                            </div>
+                            <div class="transcription-preview empty" id="transcriptionPreview">
+                                El texto transcrito aparecerá aquí...
+                            </div>
+                            <button id="sendTranscriptionBtn" class="btn-primary" onclick="sendTranscribedText()" disabled style="width: 100%; display: none;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                                Enviar Audio Transcrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <h3>
+                        <span class="status-indicator" id="statusIndicator"></span>
+                        Estado de Conexión
+                    </h3>
+                    <div class="status-info">
+                        <div class="status-item">
+                            <span class="status-label">Session ID:</span>
+                            <span class="status-value" id="sessionId">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">WebSocket:</span>
+                            <span class="status-value" id="wsStatus">Desconectado</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">WebRTC:</span>
+                            <span class="status-value" id="rtcStatus">No iniciado</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Estado:</span>
+                            <span class="status-value" id="sessionStatus">Inactivo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="createBtn" class="btn-primary" onclick="createSession()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Crear Sesión
+                    </button>
+                    <button id="closeBtn" class="btn-danger" onclick="closeSession()" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración
+        const API_BASE_URL = 'http://localhost:8000';
+        const WS_BASE_URL = 'ws://localhost:8000';
+
+        // Variables globales
+        let currentSessionId = null;
+        let ws = null;
+        let peerConnection = null;
+        let remoteStream = null;
+        
+        // Variables para chroma key
+        let canvas, ctx, animationFrame;
+        let chromaKeyActive = true;
+        let tolerance = 30;
+
+        // Variables para grabación de audio
+        let mediaRecorder = null;
+        let isRecording = false;
+        let audioChunks = [];
+        let currentTranscription = '';
+        let audioStream = null; // Stream persistente para evitar permisos repetidos
+
+        // Configuración de WebRTC
+        const rtcConfig = {
+            iceServers: []
+        };
+
+        // Funciones de logging
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+
+            // Limitar a 50 logs
+            while (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+
+        // Actualizar UI
+        function updateUI(state) {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const sessionStatus = document.getElementById('sessionStatus');
+            const createBtn = document.getElementById('createBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const sendTaskBtn = document.getElementById('sendTaskBtn');
+
+            switch(state) {
+                case 'idle':
+                    statusIndicator.classList.remove('active');
+                    sessionStatus.textContent = 'Inactivo';
+                    createBtn.disabled = false;
+                    closeBtn.disabled = true;
+                    sendTaskBtn.disabled = true;
+                    break;
+                case 'session_created':
+                    statusIndicator.classList.add('active');
+                    sessionStatus.textContent = 'Sesión Creada';
+                    createBtn.disabled = true;
+                    closeBtn.disabled = false;
+                    sendTaskBtn.disabled = true;
+                    break;
+                case 'connected':
+                    statusIndicator.classList.add('active');
+                    sessionStatus.textContent = 'Conectado';
+                    createBtn.disabled = true;
+                    closeBtn.disabled = false;
+                    sendTaskBtn.disabled = false;
+                    break;
+            }
+
+            // Actualizar botones de audio también
+            updateAudioButtonStates();
+        }
+
+        // Conectar a LiveKit usando las credenciales de HeyGen
+        async function startRtcConnection(data) {
+            if (peerConnection) {
+                addLog("Cerrando conexión WebRTC existente.", 'info');
+                peerConnection.close();
+            }
+            
+            addLog("Iniciando conexión a LiveKit...", 'info');
+            document.getElementById('rtcStatus').textContent = 'Conectando...';
+            
+            const { livekit_url, livekit_token } = data;
+            
+            if (!livekit_url || !livekit_token) {
+                addLog("Faltan credenciales de LiveKit en la respuesta.", 'error');
+                return;
+            }
+            
+            try {
+                // Importar LiveKit desde CDN si no está disponible
+                if (typeof LivekitClient === 'undefined') {
+                    addLog("Cargando LiveKit SDK...", 'info');
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/livekit-client@2.15.6/dist/livekit-client.umd.js';
+                    document.head.appendChild(script);
+                    
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = (error) => {
+                            addLog("Error cargando LiveKit desde unpkg, intentando con jsDelivr...", 'error');
+                            // Fallback a jsDelivr
+                            const fallbackScript = document.createElement('script');
+                            fallbackScript.src = 'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.js';
+                            document.head.appendChild(fallbackScript);
+                            fallbackScript.onload = resolve;
+                            fallbackScript.onerror = reject;
+                        };
+                    });
+                }
+                
+                // Crear room de LiveKit
+                const room = new LivekitClient.Room();
+                
+                // Configurar event listeners
+                room.on(LivekitClient.RoomEvent.Connected, () => {
+                    addLog("✅ Conectado a LiveKit", 'success');
+                    document.getElementById('rtcStatus').textContent = 'Conectado';
+                    updateUI('connected');
+                });
+                
+                room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (track.kind === LivekitClient.Track.Kind.Video) {
+                        addLog("✅ Stream de video recibido de HeyGen.", 'success');
+                        const element = track.attach();
+                        const remoteVideo = document.getElementById('remoteVideo');
+                        remoteVideo.srcObject = element.srcObject;
+                        document.getElementById('videoPlaceholder').style.display = 'none';
+                        document.getElementById('videoControls').style.display = 'flex';
+                        
+                        // Asegurar que el audio se reproduzca
+                        remoteVideo.muted = false;
+                        remoteVideo.play().catch(e => {
+                            addLog("Reproducción automática bloqueada. Haz clic en el video para activar el audio.", 'info');
+                        });
+                        
+                        // Activar chroma key por defecto
+                        setTimeout(() => {
+                            toggleVideoMode('chromakey');
+                            addLog("Activando modo chroma key por defecto.", 'info');
+                        }, 1500);
+                    }
+                    
+                    if (track.kind === LivekitClient.Track.Kind.Audio) {
+                        addLog("✅ Stream de audio recibido de HeyGen.", 'success');
+                        const element = track.attach();
+                        const remoteVideo = document.getElementById('remoteVideo');
+                        // Para audio, necesitamos asegurar que el video element pueda reproducir audio
+                        if (remoteVideo.srcObject) {
+                            // El audio ya está en el stream de video
+                            remoteVideo.muted = false;
+                        } else {
+                            // Si hay un track de audio separado, lo agregamos
+                            document.body.appendChild(element);
+                            element.play().catch(e => {
+                                addLog("Error reproduciendo audio: " + e.message, 'error');
+                            });
+                        }
+                    }
+                });
+                
+                room.on(LivekitClient.RoomEvent.Disconnected, () => {
+                    addLog("Desconectado de LiveKit", 'info');
+                    document.getElementById('rtcStatus').textContent = 'Desconectado';
+                    updateUI('session_created');
+                });
+                
+                // Conectar al room
+                await room.connect(livekit_url, livekit_token);
+                
+            } catch (error) {
+                addLog(`Error conectando a LiveKit: ${error.message}`, 'error');
+                document.getElementById('rtcStatus').textContent = 'Error';
+            }
+        }
+    
+    /**
+     * Función principal que se llama al hacer clic en el botón.
+     * Crea la sesión y luego inicia la conexión WebSocket.
+     */
+    async function createAndConnectSession() {
+        if (currentSessionId) {
+            addLog("Ya existe una sesión activa.", 'info');
+            return;
+        }
+
+        updateUI('creating_session');
+        addLog("Creando nueva sesión en HeyGen...", 'info');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/sessions/create`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({}) // Puedes añadir configuración aquí si quieres
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `Error del servidor: ${response.status}`);
+            }
+
+            const data = await response.json();
+            currentSessionId = data.session_id;
+            
+            addLog(`✅ Sesión creada con éxito: ${currentSessionId}`, 'success');
+            document.getElementById('sessionId').textContent = currentSessionId;
+            updateUI('session_created');
+
+            // Iniciar la conexión WebSocket automáticamente
+            connectWebSocket();
+            
+            // Agregar event listener para click en video para unmute (por si acaso)
+            const remoteVideo = document.getElementById('remoteVideo');
+            remoteVideo.addEventListener('click', () => {
+                if (remoteVideo.muted) {
+                    remoteVideo.muted = false;
+                    addLog("Audio activado por interacción del usuario", 'success');
+                }
+            });
+
+        } catch (error) {
+            addLog(`Error al crear la sesión: ${error.message}`, 'error');
+            updateUI('idle');
+        }
+    }
+
+    /**
+     * Inicia la conexión WebSocket.
+     */
+    function connectWebSocket() {
+        if (!currentSessionId) {
+            addLog("No hay ID de sesión para conectar el WebSocket.", 'error');
+            return;
+        }
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            addLog("WebSocket ya está conectado.", 'info');
+            return;
+        }
+
+        addLog(`Conectando WebSocket a ${WS_BASE_URL}/ws/${currentSessionId}`, 'info');
+        ws = new WebSocket(`${WS_BASE_URL}/ws/${currentSessionId}`);
+        document.getElementById('wsStatus').textContent = 'Conectando...';
+
+        ws.onopen = () => {
+            addLog("✅ WebSocket conectado.", 'success');
+            document.getElementById('wsStatus').textContent = 'Conectado';
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            addLog(`Mensaje recibido del backend: ${message.type}`, 'info');
+
+            if (message.type === 'session_info') {
+                // Iniciar WebRTC cuando recibimos la información de la sesión
+                startRtcConnection(message.data);
+            } else if (message.type === 'error') {
+                addLog(`Error desde el WebSocket: ${message.message}`, 'error');
+            }
+        };
+
+        ws.onclose = () => {
+            addLog("WebSocket desconectado.", 'info');
+            document.getElementById('wsStatus').textContent = 'Desconectado';
+        };
+
+        ws.onerror = (error) => {
+            addLog(`Error de WebSocket: ${error.message || 'Error desconocido'}`, 'error');
+            document.getElementById('wsStatus').textContent = 'Error';
+        };
+    }
+
+
+        // Enviar tarea
+        function sendTask() {
+            const taskText = document.getElementById('taskText').value.trim();
+            
+            if (!taskText) {
+                addLog('El texto no puede estar vacío', 'error');
+                return;
+            }
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('WebSocket no conectado', 'error');
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'task',
+                text: taskText,
+                task_type: 'chat'  // Especificar explícitamente el tipo de tarea
+            }));
+
+            addLog(`Enviando tarea: "${taskText.substring(0, 50)}..."`, 'info');
+        }
+
+        // Cerrar sesión
+        async function closeSession() {
+            if (!currentSessionId) return;
+            
+            try {
+                addLog('Cerrando sesión...', 'info');
+
+                // Notificar al servidor que vamos a cerrar
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'close' }));
+                }
+
+                // Llamar al endpoint de cierre en el backend
+                await fetch(`${API_BASE_URL}/api/sessions/${currentSessionId}`, {
+                    method: 'DELETE'
+                });
+                
+                addLog('Sesión cerrada en el backend', 'success');
+
+            } catch (error) {
+                addLog(`Error al cerrar sesión: ${error.message}`, 'error');
+            } finally {
+                // Siempre limpiar recursos localmente
+                cleanup();
+            }
+        }
+
+        // Limpiar recursos
+        function cleanup() {
+            // Detener procesamiento de chroma key
+            chromaKeyActive = false;
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+
+            // Cerrar conexiones
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+
+            // Limpiar stream de audio persistente
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+                audioStream = null;
+            }
+
+            // Limpiar todos los elementos de video
+            const remoteVideo = document.getElementById('remoteVideo');
+            const displayVideo = document.getElementById('displayVideo');
+            const canvas = document.getElementById('videoCanvas');
+            
+            // Pausar y limpiar streams de video
+            if (remoteVideo.srcObject) {
+                const tracks = remoteVideo.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                remoteVideo.srcObject = null;
+            }
+            
+            if (displayVideo.srcObject) {
+                const tracks = displayVideo.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                displayVideo.srcObject = null;
+            }
+            
+            // Pausar videos para asegurar que no muestren el último frame
+            remoteVideo.pause();
+            displayVideo.pause();
+            
+            // Limpiar canvas
+            if (canvas && ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // Ocultar todos los elementos de video y mostrar placeholder
+            remoteVideo.style.display = 'none';
+            displayVideo.style.display = 'none';
+            canvas.style.display = 'none';
+            document.getElementById('videoControls').style.display = 'none';
+            document.getElementById('videoPlaceholder').style.display = 'block';
+
+            // Resetear estado
+            currentSessionId = null;
+            document.getElementById('sessionId').textContent = '-';
+            document.getElementById('wsStatus').textContent = 'Desconectado';
+            document.getElementById('rtcStatus').textContent = 'No iniciado';
+
+            updateUI('idle');
+            
+            addLog('✅ Recursos limpiados correctamente', 'success');
+        }
+
+
+        // Variables para optimización de rendimiento
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 0;
+        
+        // Función optimizada de chroma key que procesa cada frame
+        function processChromaKey() {
+            if (!canvas || !ctx || !chromaKeyActive) return;
+            
+            const video = document.getElementById('remoteVideo');
+            if (!video.videoWidth || !video.videoHeight) return;
+            
+            // Optimización: procesar solo cada 2-3 frames para mejor rendimiento
+            frameCount++;
+            if (frameCount % 2 !== 0) {
+                animationFrame = requestAnimationFrame(processChromaKey);
+                return;
+            }
+            
+            // Calcular FPS
+            const currentTime = performance.now();
+            if (currentTime - lastTime > 1000) {
+                fps = Math.round(frameCount / ((currentTime - lastTime) / 1000));
+                lastTime = currentTime;
+                frameCount = 0;
+            }
+            
+            // Ajustar tamaño del canvas al video (solo si cambió)
+            if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                addLog(`Canvas redimensionado: ${canvas.width}x${canvas.height}`, 'info');
+            }
+            
+            // Dibujar frame actual del video
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            try {
+                // Obtener datos de píxeles
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                // Procesar cada píxel para chroma key (optimizado)
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    
+                    // Algoritmo de detección de verde mejorado
+                    const greenDominance = g - Math.max(r, b);
+                    const isChromaKey = greenDominance > tolerance && g > 80;
+                    
+                    if (isChromaKey) {
+                        // Reemplazar con fondo elegante (gradiente suave)
+                        const pixelIndex = i / 4;
+                        const y = Math.floor(pixelIndex / canvas.width);
+                        const x = pixelIndex % canvas.width;
+                        
+                        // Gradiente diagonal
+                        const gradientFactor = (y + x * 0.3) / (canvas.height + canvas.width * 0.3);
+                        
+                        data[i] = Math.floor(15 + gradientFactor * 25);     // R (azul oscuro)
+                        data[i + 1] = Math.floor(20 + gradientFactor * 35); // G
+                        data[i + 2] = Math.floor(45 + gradientFactor * 60); // B (azul más claro)
+                        // Alpha se mantiene igual para preservar transparencia
+                    }
+                }
+                
+                // Aplicar píxeles procesados
+                ctx.putImageData(imageData, 0, 0);
+                
+            } catch (error) {
+                addLog(`Error en procesamiento chroma key: ${error.message}`, 'error');
+                // Fallback: mostrar video original
+                toggleVideoMode('original');
+                return;
+            }
+            
+            // Continuar procesamiento
+            if (chromaKeyActive) {
+                animationFrame = requestAnimationFrame(processChromaKey);
+            }
+        }
+        
+        // Inicializar sistema de chroma key con detección de soporte
+        function initChromaKey() {
+            canvas = document.getElementById('videoCanvas');
+            
+            // Verificar soporte de Canvas
+            if (!canvas || !canvas.getContext) {
+                addLog("Canvas no soportado. Usando video original.", 'error');
+                return false;
+            }
+            
+            ctx = canvas.getContext('2d');
+            if (!ctx) {
+                addLog("Context 2D no disponible. Usando video original.", 'error');
+                return false;
+            }
+            
+            // Verificar soporte de ImageData
+            try {
+                const testData = ctx.createImageData(1, 1);
+                if (!testData) throw new Error("ImageData no disponible");
+            } catch (e) {
+                addLog("ImageData no soportado. Usando video original.", 'error');
+                return false;
+            }
+            
+            // Actualizar tolerancia desde slider
+            const slider = document.getElementById('toleranceSlider');
+            if (slider) {
+                slider.addEventListener('input', (e) => {
+                    tolerance = parseInt(e.target.value);
+                    addLog(`Tolerancia chroma key: ${tolerance}`, 'info');
+                });
+                tolerance = parseInt(slider.value);
+            }
+            
+            addLog("✅ Sistema de chroma key inicializado correctamente", 'success');
+            return true;
+        }
+        
+        // Cambiar modo de video
+        function toggleVideoMode(mode) {
+            const buttons = document.querySelectorAll('.video-filter-btn');
+            const canvas = document.getElementById('videoCanvas');
+            const displayVideo = document.getElementById('displayVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
+            const chromaControls = document.getElementById('chromaControls');
+            
+            // Remover clase active
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (mode === 'original') {
+                // Modo original: mostrar video directo
+                chromaKeyActive = false;
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+                
+                canvas.style.display = 'none';
+                displayVideo.style.display = 'block';
+                displayVideo.srcObject = remoteVideo.srcObject;
+                displayVideo.className = ''; // Sin clases de filtro
+                chromaControls.style.display = 'none';
+                
+                document.querySelector('[onclick="toggleVideoMode(\'original\')"]').classList.add('active');
+                addLog("Modo: Video original de HeyGen (sin filtros)", 'info');
+                
+            } else if (mode === 'chromakey') {
+                // Intentar inicializar chroma key
+                if (!ctx && !initChromaKey()) {
+                    // Fallback: usar filtros CSS si canvas falla
+                    addLog("Fallback: Usando filtros CSS", 'info');
+                    displayVideo.style.display = 'block';
+                    displayVideo.srcObject = remoteVideo.srcObject;
+                    displayVideo.className = ''; // Sin clases de filtro
+                    chromaControls.style.display = 'none';
+                    
+                    document.querySelector('[onclick="toggleVideoMode(\'chromakey\')"]').classList.add('active');
+                    return;
+                }
+                
+                // Modo chroma key: mostrar canvas procesado
+                chromaKeyActive = true;
+                
+                displayVideo.style.display = 'none';  
+                canvas.style.display = 'block';
+                chromaControls.style.display = 'block';
+                
+                // Iniciar procesamiento
+                processChromaKey();
+                
+                document.querySelector('[onclick="toggleVideoMode(\'chromakey\')"]').classList.add('active');
+                addLog("✅ Modo: Chroma key selectivo activado", 'success');
+            }
+        }
+
+        // Manejar Enter en el textarea
+        document.getElementById('taskText').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                sendTask();
+            }
+        });
+        // Cambiar la llamada onclick del botón "Crear Sesión"
+        document.getElementById('createBtn').onclick = createAndConnectSession;
+
+        // ===== FUNCIONES PARA MANEJO DE AUDIO =====
+
+        // Cambiar entre modos de entrada (texto/audio)
+        function switchInputMode(mode) {
+            const textTab = document.getElementById('textTab');
+            const audioTab = document.getElementById('audioTab');
+            const textPanel = document.getElementById('textPanel');
+            const audioPanel = document.getElementById('audioPanel');
+
+            // Actualizar tabs
+            textTab.classList.toggle('active', mode === 'text');
+            audioTab.classList.toggle('active', mode === 'audio');
+
+            // Actualizar paneles
+            textPanel.classList.toggle('active', mode === 'text');
+            audioPanel.classList.toggle('active', mode === 'audio');
+
+            // Actualizar estado de botones según el modo
+            updateAudioButtonStates();
+            
+            addLog(`Modo de entrada cambiado a: ${mode}`, 'info');
+        }
+
+        // Actualizar estado de botones de audio
+        function updateAudioButtonStates() {
+            const recordBtn = document.getElementById('recordBtn');
+            const sendTranscriptionBtn = document.getElementById('sendTranscriptionBtn');
+            
+            // Habilitar grabación solo si hay sesión activa y stream disponible
+            const sessionActive = currentSessionId && ws && ws.readyState === WebSocket.OPEN && audioStream;
+            recordBtn.disabled = !sessionActive;
+            
+            // Ocultar botón de envío manual ya que ahora es automático
+            sendTranscriptionBtn.style.display = 'none';
+        }
+
+        // Inicializar acceso al micrófono
+        async function initializeAudio() {
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { 
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                addLog('✅ Acceso al micrófono concedido - stream persistente creado', 'success');
+                return true;
+            } catch (error) {
+                addLog(`❌ Error accediendo al micrófono: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Iniciar grabación
+        async function startRecording() {
+            if (isRecording || !currentSessionId || !audioStream) return;
+            
+            try {
+                audioChunks = [];
+                mediaRecorder = new MediaRecorder(audioStream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    await processRecording();
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                
+                // Actualizar UI
+                const recordBtn = document.getElementById('recordBtn');
+                const recordStatus = document.getElementById('recordStatus');
+                recordBtn.classList.add('recording');
+                recordStatus.textContent = '🔴 Grabando... (suelta para transcribir y enviar)';
+                
+                addLog('🎤 Iniciada grabación de audio (usando stream persistente)', 'info');
+                
+            } catch (error) {
+                addLog(`Error iniciando grabación: ${error.message}`, 'error');
+                isRecording = false;
+            }
+        }
+
+        // Detener grabación
+        function stopRecording() {
+            if (!isRecording || !mediaRecorder) return;
+            
+            mediaRecorder.stop();
+            isRecording = false;
+            
+            // Actualizar UI
+            const recordBtn = document.getElementById('recordBtn');
+            const recordStatus = document.getElementById('recordStatus');
+            recordBtn.classList.remove('recording');
+            recordStatus.textContent = '🔄 Procesando audio...';
+        }
+
+        // Procesar grabación y enviar a STT
+        async function processRecording() {
+            if (audioChunks.length === 0) {
+                addLog('No se grabó audio', 'error');
+                document.getElementById('recordStatus').textContent = 'Mantén presionado para grabar';
+                return;
+            }
+
+            try {
+                // Crear blob de audio
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                
+                // Crear FormData para enviar al servidor
+                const formData = new FormData();
+                formData.append('audio_file', audioBlob, 'recording.webm');
+                
+                // Enviar a endpoint STT
+                addLog('📤 Enviando audio para transcripción...', 'info');
+                const response = await fetch(`${API_BASE_URL}/api/stt/transcribe`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Error en transcripción');
+                }
+                
+                const result = await response.json();
+                currentTranscription = result.transcription;
+                
+                // Mostrar transcripción
+                const transcriptionPreview = document.getElementById('transcriptionPreview');
+                transcriptionPreview.textContent = `"${currentTranscription}"`;
+                transcriptionPreview.classList.remove('empty');
+                
+                document.getElementById('recordStatus').textContent = '✅ Audio transcrito - enviando automáticamente...';
+                updateAudioButtonStates();
+                
+                addLog(`✅ Audio transcrito: "${currentTranscription}"`, 'success');
+                addLog(`Confianza: ${(result.confidence * 100).toFixed(1)}% | Duración: ${result.duration.toFixed(1)}s`, 'info');
+                
+                // Envío automático del texto transcrito
+                setTimeout(() => {
+                    sendTranscribedTextAutomatically();
+                }, 500); // Pequeño delay para mostrar la transcripción
+                
+            } catch (error) {
+                addLog(`Error en transcripción: ${error.message}`, 'error');
+                document.getElementById('recordStatus').textContent = '❌ Error en transcripción';
+                currentTranscription = '';
+                updateAudioButtonStates();
+            }
+        }
+
+        // Enviar texto transcrito automáticamente
+        function sendTranscribedTextAutomatically() {
+            if (!currentTranscription || !ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('❌ No se puede enviar transcripción - WebSocket no conectado', 'error');
+                document.getElementById('recordStatus').textContent = '❌ Error de conexión - transcripción no enviada';
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'task',
+                text: currentTranscription,
+                task_type: 'chat'
+            }));
+
+            addLog(`📤 Enviando automáticamente al avatar: "${currentTranscription}"`, 'info');
+            document.getElementById('recordStatus').textContent = '📤 Enviado al avatar correctamente';
+            
+            // Limpiar transcripción después de enviar
+            setTimeout(() => {
+                currentTranscription = '';
+                const transcriptionPreview = document.getElementById('transcriptionPreview');
+                transcriptionPreview.textContent = 'El texto transcrito aparecerá aquí...';
+                transcriptionPreview.classList.add('empty');
+                document.getElementById('recordStatus').textContent = 'Mantén presionado para grabar';
+                updateAudioButtonStates();
+            }, 2000); // Más tiempo para ver el feedback
+        }
+
+        // Enviar texto transcrito como tarea (función manual - mantener por compatibilidad)
+        function sendTranscribedText() {
+            sendTranscribedTextAutomatically();
+        }
+
+        // Inicialización
+        window.addEventListener('load', async () => {
+            addLog('Cliente HeyGen iniciado', 'success');
+            updateUI('idle');
+            
+            // Solicitar acceso al micrófono para funcionalidad de audio
+            const audioAvailable = await initializeAudio();
+            if (audioAvailable) {
+                addLog('🎤 Funcionalidad de audio habilitada', 'info');
+            } else {
+                addLog('⚠️ Micrófono no disponible - solo modo texto', 'info');
+            }
+        });
+
+        // Limpiar al cerrar la ventana
+        window.addEventListener('beforeunload', () => {
+            cleanup();
+        });
+    </script>
+</body>
+</html>
