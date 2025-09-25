@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyGen Streaming Client</title>
+    <title>AlicIA - Asistente Virtual Indra CoE</title>
+
+    <!-- Favicon optimizado para AlicIA -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='faviconGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff007f'/><stop offset='50%25' style='stop-color:%2300d4ff'/><stop offset='100%25' style='stop-color:%23ff007f'/></linearGradient></defs><circle cx='16' cy='16' r='14' fill='url(%23faviconGrad)' opacity='0.15'/><circle cx='16' cy='16' r='11' fill='none' stroke='url(%23faviconGrad)' stroke-width='2'/><circle cx='16' cy='8' r='2' fill='url(%23faviconGrad)'/><circle cx='8' cy='14' r='1.5' fill='url(%23faviconGrad)'/><circle cx='24' cy='14' r='1.5' fill='url(%23faviconGrad)'/><circle cx='11' cy='22' r='1.5' fill='url(%23faviconGrad)'/><circle cx='21' cy='22' r='1.5' fill='url(%23faviconGrad)'/><circle cx='16' cy='24' r='2' fill='url(%23faviconGrad)'/><text x='16' y='20' text-anchor='middle' fill='url(%23faviconGrad)' font-family='Arial,sans-serif' font-size='8' font-weight='bold'>AI</text></svg>" type="image/svg+xml">
+
+    <!-- Favicons adicionales para compatibilidad -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='appleGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff007f'/><stop offset='50%25' style='stop-color:%2300d4ff'/><stop offset='100%25' style='stop-color:%23ff007f'/></linearGradient></defs><rect width='180' height='180' rx='20' fill='%23000'/><circle cx='90' cy='90' r='70' fill='url(%23appleGrad)' opacity='0.15'/><circle cx='90' cy='90' r='55' fill='none' stroke='url(%23appleGrad)' stroke-width='4'/><circle cx='90' cy='45' r='8' fill='url(%23appleGrad)'/><circle cx='45' cy='70' r='6' fill='url(%23appleGrad)'/><circle cx='135' cy='70' r='6' fill='url(%23appleGrad)'/><circle cx='60' cy='115' r='6' fill='url(%23appleGrad)'/><circle cx='120' cy='115' r='6' fill='url(%23appleGrad)'/><circle cx='90' cy='135' r='8' fill='url(%23appleGrad)'/><text x='90' y='105' text-anchor='middle' fill='url(%23appleGrad)' font-family='Arial,sans-serif' font-size='24' font-weight='bold'>AI</text></svg>">
+
+    <!-- Meta tags para PWA -->
+    <meta name="theme-color" content="#ff007f">
+    <meta name="msapplication-TileColor" content="#ff007f">
     <style>
         * {
             margin: 0;
@@ -13,7 +23,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 25%, #0a1a2a 50%, #2a0a1a 75%, #0a0a0a 100%);
             min-height: 100vh;
             margin: 0;
             padding: 20px;
@@ -21,127 +31,243 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 0, 127, 0.3);
             border-radius: 24px;
-            box-shadow: 0 32px 64px rgba(0,0,0,0.4);
+            box-shadow: 0 32px 64px rgba(0,0,0,0.6), 0 0 40px rgba(255, 0, 127, 0.1), 0 0 80px rgba(0, 212, 255, 0.05);
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes logoFloat {
+            from {
+                transform: translateY(0px) rotate(0deg);
+            }
+            to {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(255, 0, 127, 0.8)) drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
+            }
+        }
+
+        @keyframes textShimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
         }
 
         .header {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            background: linear-gradient(135deg, rgba(255, 0, 127, 0.2) 0%, rgba(0, 212, 255, 0.15) 50%, rgba(255, 0, 127, 0.1) 100%);
             color: white;
-            padding: 40px;
+            padding: 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 0, 127, 0.15);
         }
 
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .alicia-logo {
+            animation: logoFloat 3s ease-in-out infinite alternate, logoGlow 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .alicia-logo:hover {
+            transform: scale(1.1);
+            animation-duration: 1s;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff007f 0%, #00d4ff 50%, #ff007f 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s linear infinite;
+            text-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+        }
+
+        .logo-text .subtitle {
+            display: block;
+            font-size: 0.7em;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-top: -2px;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
+            opacity: 0.8;
+            font-size: 0.95em;
+            margin: 0;
         }
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
+            grid-template-columns: 70% 30%;
+            gap: 24px;
+            padding: 18px 24px 24px;
+            min-height: calc(100vh - 140px);
+            align-items: start;
         }
 
         .video-section {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
+            position: relative;
         }
 
         .video-container {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 20px;
-            aspect-ratio: 16/9;
-            min-height: 500px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a1a2a 100%);
+            border: 2px solid rgba(255, 0, 127, 0.4);
+            border-radius: 22px;
+            width: 100%;
+            height: 65vh;
+            max-height: 650px;
+            min-height: 420px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
+            box-shadow:
+                0 12px 48px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(255, 0, 127, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
 
         .video-container:hover {
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 
-                0 12px 48px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(102, 126, 234, 0.3),
+            border-color: rgba(255, 0, 127, 0.6);
+            box-shadow:
+                0 16px 64px rgba(0, 0, 0, 0.7),
+                0 0 60px rgba(255, 0, 127, 0.4),
+                0 0 0 1px rgba(0, 212, 255, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
 
         video {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             border-radius: 18px;
-            /* Sin filtros - video original de HeyGen */
+        }
+
+        #displayVideo, #videoCanvas, #remoteVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
         }
         
         /* Estilos para controles de filtro de video */
         .video-filter-btn {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 16px;
+            padding: 10px 14px;
+            border-radius: 22px;
+            font-size: 18px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .video-filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .video-filter-btn:hover::before {
+            left: 100%;
+        }
+
         .video-filter-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(102, 126, 234, 0.5);
-            transform: scale(1.1);
+            background: rgba(0, 0, 0, 0.9);
+            border-color: rgba(255, 0, 127, 0.6);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
         }
-        
+
         .video-filter-btn.active {
-            background: rgba(102, 126, 234, 0.8);
-            border-color: rgba(102, 126, 234, 1);
+            background: rgba(255, 0, 127, 0.9);
+            border-color: rgba(255, 0, 127, 1);
+            box-shadow: 0 4px 16px rgba(255, 0, 127, 0.4);
+        }
+
+        .video-filter-btn.active:hover {
+            background: rgba(255, 0, 127, 1);
+            transform: translateY(-2px) scale(1.05);
         }
 
         .controls-section {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
+            height: fit-content;
+            position: static;
         }
 
         .status-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(14, 165, 233, 0.3);
-            border-radius: 16px;
-            padding: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            border-radius: 14px;
+            padding: 12px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 0, 127, 0.1);
         }
 
         .status-card h3 {
             color: #ffffff;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 1.2em;
+            gap: 6px;
+            font-size: 1em;
             font-weight: 600;
         }
 
@@ -160,6 +286,17 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
+        }
+
+        @keyframes pulse-border {
+            0%, 100% {
+                border-color: rgba(0, 212, 255, 0.3);
+                box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
+            }
+            50% {
+                border-color: rgba(0, 212, 255, 0.8);
+                box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2);
+            }
         }
 
         .status-info {
@@ -197,35 +334,37 @@
             font-weight: 600;
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.9em;
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(255, 0, 127, 0.1);
             padding: 4px 8px;
             border-radius: 6px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(255, 0, 127, 0.2);
         }
 
         .button-group {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .button-group button {
             flex: 1;
-            min-width: 140px;
+            min-width: 120px;
+            padding: 12px 20px;
+            font-size: 0.9em;
         }
 
         button {
-            padding: 14px 24px;
+            padding: 12px 20px;
             border-radius: 12px;
             border: 1px solid transparent;
-            font-size: 0.95em;
+            font-size: 0.9em;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
@@ -238,11 +377,11 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.6s ease;
         }
 
-        button:hover::before {
+        button:hover:not(:disabled)::before {
             left: 100%;
         }
 
@@ -252,16 +391,17 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2a2a3e 0%, #353550 50%, #2a2a3e 100%);
             color: white;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(255, 0, 127, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.2), 0 0 20px rgba(255, 0, 127, 0.1);
         }
 
         .btn-primary:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
-            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(255, 0, 127, 0.4), 0 0 40px rgba(255, 0, 127, 0.2);
+            border-color: rgba(255, 0, 127, 0.7);
+            background: linear-gradient(135deg, #353550 0%, #404060 50%, #353550 100%);
         }
 
         .btn-secondary {
@@ -274,16 +414,17 @@
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            background: linear-gradient(135deg, #c62828 0%, #ad1457 50%, #c62828 100%);
             color: white;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(198, 40, 40, 0.4);
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3), 0 0 15px rgba(198, 40, 40, 0.1);
         }
 
         .btn-danger:hover:not(:disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(239, 68, 68, 0.4);
-            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 12px 25px rgba(198, 40, 40, 0.4), 0 0 30px rgba(198, 40, 40, 0.2);
+            border-color: rgba(198, 40, 40, 0.6);
+            background: linear-gradient(135deg, #d32f2f 0%, #c2185b 50%, #d32f2f 100%);
         }
 
         .btn-success {
@@ -296,56 +437,60 @@
         }
 
         .task-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 14px;
+            padding: 16px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 212, 255, 0.1);
         }
 
         .task-section h3 {
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             color: #ffffff;
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: 600;
         }
 
         /* Tabs para modos de entrada */
         .input-mode-tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 12px;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 4px;
+            border-radius: 10px;
+            padding: 3px;
         }
 
         .tab-button {
             flex: 1;
-            padding: 12px 20px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.6);
+            padding: 8px 16px;
+            background: rgba(42, 42, 62, 0.4);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 7px;
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 0.9em;
         }
 
         .tab-button.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.6);
             color: white;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3), 0 0 15px rgba(0, 212, 255, 0.1);
         }
 
         .tab-button:hover:not(.active) {
-            color: rgba(255, 255, 255, 0.8);
-            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(42, 42, 62, 0.6);
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
         }
 
         /* Panel de contenido para cada modo */
@@ -369,8 +514,8 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 4px solid rgba(239, 68, 68, 0.3);
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border: 4px solid rgba(255, 0, 127, 0.4);
+            background: linear-gradient(135deg, #2a2a3e 0%, #353550 50%, #2a2a3e 100%);
             color: white;
             font-size: 2em;
             cursor: pointer;
@@ -380,26 +525,29 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 8px 32px rgba(255, 0, 127, 0.2);
         }
 
         .record-button:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 12px 48px rgba(239, 68, 68, 0.5);
+            transform: scale(1.08);
+            box-shadow: 0 16px 64px rgba(255, 0, 127, 0.5), 0 0 40px rgba(255, 0, 127, 0.3);
+            border-color: rgba(255, 0, 127, 0.8);
+            background: linear-gradient(135deg, #404060 0%, #505070 50%, #404060 100%);
         }
 
         .record-button.recording {
             animation: pulse-record 1.5s infinite;
-            border-color: #ef4444;
+            border-color: #e91e63;
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 50%, #e91e63 100%);
         }
 
         @keyframes pulse-record {
-            0%, 100% { 
-                box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(233, 30, 99, 0.4);
                 transform: scale(1);
             }
-            50% { 
-                box-shadow: 0 12px 48px rgba(239, 68, 68, 0.8);
+            50% {
+                box-shadow: 0 12px 48px rgba(233, 30, 99, 0.8);
                 transform: scale(1.02);
             }
         }
@@ -433,14 +581,14 @@
 
         textarea {
             width: 100%;
-            padding: 16px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            border-radius: 10px;
             resize: vertical;
             font-family: inherit;
-            font-size: 1em;
-            min-height: 120px;
+            font-size: 0.95em;
+            min-height: 80px;
             color: #ffffff;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
@@ -449,97 +597,523 @@
 
         textarea:focus {
             outline: none;
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: rgba(255, 0, 127, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 0, 127, 0.2), 0 4px 20px rgba(255, 0, 127, 0.15);
             background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
         }
 
         textarea::placeholder {
             color: rgba(255, 255, 255, 0.5);
         }
 
-        .log-section {
+        /* Estilos para validación de email */
+        .email-valid {
+            border-color: rgba(34, 197, 94, 0.8) !important;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2), 0 4px 20px rgba(34, 197, 94, 0.15) !important;
+            background: rgba(34, 197, 94, 0.08) !important;
+        }
+
+        .email-invalid {
+            border-color: rgba(239, 68, 68, 0.8) !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2), 0 4px 20px rgba(239, 68, 68, 0.15) !important;
+            background: rgba(239, 68, 68, 0.08) !important;
+        }
+
+        .conversation-section {
             background: rgba(30, 41, 59, 0.6);
             color: #e2e8f0;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 20px;
-            max-height: 220px;
-            overflow-y: auto;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        .log-section::-webkit-scrollbar {
+        .conversation-header {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .conversation-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .conversation-collapse-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .conversation-collapsed .conversation-collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .conversation-content {
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 12px;
+            transition: max-height 0.3s ease;
+        }
+
+        .conversation-collapsed .conversation-content {
+            max-height: 0;
+            padding: 0 12px;
+        }
+
+        .conversation-content::-webkit-scrollbar {
             width: 6px;
         }
 
-        .log-section::-webkit-scrollbar-track {
+        .conversation-content::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
         }
 
-        .log-section::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
+        .conversation-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 127, 0.5);
             border-radius: 3px;
         }
 
-        .log-section h3 {
+        .conversation-title {
             color: white;
-            margin-bottom: 20px;
-            font-size: 1.2em;
+            font-size: 1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .conversation-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        .conversation-placeholder p {
+            margin: 0 0 10px 0;
+            font-size: 1em;
+        }
+
+        .conversation-placeholder small {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .conversation-entry {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .conversation-entry:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .conversation-entry.user {
+            border-left: 3px solid #0d9488; /* Teal para usuario */
+        }
+
+        .conversation-entry.assistant {
+            border-left: 3px solid #ff007f; /* Rosa para AlicIA */
+        }
+
+        .conversation-speaker {
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .conversation-speaker.user {
+            color: #14b8a6; /* Teal claro */
+        }
+
+        .conversation-speaker.assistant {
+            color: #ff40a0; /* Rosa brillante */
+        }
+
+        .conversation-message {
+            font-size: 0.95em;
+            line-height: 1.4;
+            color: #ffffff;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+
+        .conversation-time {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: right;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        /* Chips flotantes sobre el video */
+        .floating-questions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .floating-questions.active {
+            pointer-events: all;
+        }
+
+        .question-chip {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+            pointer-events: all;
+        }
+
+        .question-chip:hover {
+            background: rgba(255, 0, 127, 0.2);
+            border-color: rgba(255, 0, 127, 0.6);
+            transform: translateY(-2px);
+            opacity: 1;
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+        }
+
+        /* Estilos para la sección de preguntas sugeridas (reducida) */
+        .suggested-questions-section {
+            background: rgba(30, 41, 59, 0.6);
+            color: #e2e8f0;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 14px;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .suggested-questions-section h3 {
+            color: white;
+            margin-bottom: 8px;
+            font-size: 1em;
             font-weight: 600;
         }
 
-        .log-entry {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.85em;
-            padding: 4px 0;
-            border-left: 2px solid #667eea;
-            padding-left: 10px;
-            margin-bottom: 5px;
+        .questions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .log-entry.error {
-            border-left-color: #ef4444;
-            color: #fca5a5;
+        .question-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            color: #ffffff;
+            font-size: 0.9em;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+            line-height: 1.4;
         }
 
-        .log-entry.success {
-            border-left-color: #22c55e;
-            color: #86efac;
+        .question-btn:hover:not(:disabled) {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+
+        .question-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-icon {
+            font-size: 1.2em;
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-text {
+            flex: 1;
+            word-wrap: break-word;
+        }
+
+        /* Estilos para botón flotante de audio */
+        .floating-audio-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 15;
+            width: 80px;
+            height: 120px;
+            pointer-events: none;
+        }
+
+        .floating-audio-button.active {
+            pointer-events: all;
+        }
+
+        .floating-record-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 0, 127, 0.4);
+            background: linear-gradient(135deg, #2a2a3e 0%, #353550 50%, #2a2a3e 100%);
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 10px;
+            top: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(255, 0, 127, 0.2);
+            backdrop-filter: blur(10px);
+            pointer-events: all;
+            transform: none;
+            transform-origin: center;
+        }
+
+        .floating-record-button:hover:not(:disabled) {
+            transform: none;
+            box-shadow: 0 6px 24px rgba(255, 0, 127, 0.4);
+            border-color: rgba(255, 0, 127, 0.6);
+        }
+
+        .floating-record-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .floating-record-button.recording {
+            animation: pulse-floating-record 1.5s infinite;
+            border-color: #e91e63;
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 50%, #e91e63 100%);
+        }
+
+        @keyframes pulse-floating-record {
+            0%, 100% {
+                box-shadow: 0 4px 16px rgba(233, 30, 99, 0.4);
+                transform: none;
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(233, 30, 99, 0.8);
+                transform: none;
+            }
+        }
+
+        .floating-audio-status {
+            background: transparent;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            text-align: center;
+            white-space: nowrap;
+            max-width: 80px;
+            position: absolute;
+            left: 40px;
+            top: 65px;
+            transform: translateX(-50%);
+            word-wrap: break-word;
+            line-height: 1.2;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            font-weight: 500;
+        }
+
+        .floating-transcription {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            max-width: 80px;
+            word-wrap: break-word;
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.2);
+            position: absolute;
+            left: 0;
+            top: 95px;
+            line-height: 1.2;
         }
 
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 8px;
             }
-            
+
             .container {
                 margin: 0;
                 border-radius: 16px;
             }
-            
+
             .header {
-                padding: 30px 20px;
+                padding: 16px 12px;
             }
-            
+
+            .logo-container {
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .alicia-logo {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.4em;
+            }
+
+            .logo-text .subtitle {
+                font-size: 0.65em;
+            }
+
             .main-content {
                 grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 20px;
+                gap: 16px;
+                padding: 16px;
+                min-height: calc(100vh - 140px);
+            }
+
+            .video-section {
+                order: 1;
+            }
+
+            .controls-section {
+                order: 2;
+                position: relative;
+                width: 100%;
+                gap: 12px;
+            }
+
+            .video-container {
+                height: 75vh;
+                min-height: 300px;
+                max-height: none;
             }
 
             .button-group {
-                flex-direction: column;
-            }
-            
-            .button-group button {
+                flex-direction: row;
+                gap: 8px;
+                max-width: 100%;
                 min-width: auto;
             }
-            
+
+            .button-group button {
+                flex: 1;
+                min-width: auto;
+                font-size: 0.8em;
+                padding: 10px 16px;
+            }
+
+            .task-section {
+                max-width: 100%;
+                margin-bottom: 8px;
+            }
+
+            .floating-questions {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                gap: 6px;
+            }
+
+            .question-chip {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .conversation-content {
+                max-height: 150px;
+            }
+
+            .task-section h3 {
+                font-size: 0.85em;
+            }
+
+            .tab-button {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            textarea {
+                min-height: 60px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-container {
+                gap: 8px;
+            }
+
+            .alicia-logo {
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.3em;
+            }
+
+            .logo-text .subtitle {
+                font-size: 0.6em;
+            }
+
             .video-container {
-                min-height: 300px;
+                height: 50vh;
+                min-height: 250px;
+            }
+
+            .floating-questions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .question-chip {
+                max-width: 80%;
+                text-align: center;
             }
         }
 
@@ -556,13 +1130,86 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Estado de botón procesando */
+        .btn-processing {
+            opacity: 0.8;
+            cursor: not-allowed !important;
+            position: relative;
+        }
+
+        .btn-processing::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 0, 127, 0.1);
+            border-radius: inherit;
+            animation: pulse-processing 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-processing {
+            0%, 100% {
+                opacity: 0.1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(1.02);
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 HeyGen Streaming Client</h1>
-            <p>Control de sesiones de streaming con WebRTC</p>
+            <div class="logo-container">
+                <svg class="alicia-logo" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ff007f;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff007f;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Brain/AI Core -->
+                    <circle cx="30" cy="30" r="25" fill="url(#logoGradient)" opacity="0.1" filter="url(#glow)"/>
+                    <circle cx="30" cy="30" r="20" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
+
+                    <!-- Neural Network Nodes -->
+                    <circle cx="30" cy="15" r="3" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="15" cy="25" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="45" cy="25" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="20" cy="40" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="40" cy="40" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="30" cy="45" r="3" fill="url(#logoGradient)" filter="url(#glow)"/>
+
+                    <!-- Neural Connections -->
+                    <path d="M30 18 L27 22 L30 26 L33 22 Z" fill="url(#logoGradient)" opacity="0.8"/>
+                    <path d="M18 25 L22 28 L26 25 L22 22 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    <path d="M42 25 L38 28 L34 25 L38 22 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    <path d="M23 37 L27 34 L30 38 L26 41 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    <path d="M37 37 L33 34 L30 38 L34 41 Z" fill="url(#logoGradient)" opacity="0.6"/>
+
+                    <!-- Central AI Symbol -->
+                    <text x="30" y="35" text-anchor="middle" fill="url(#logoGradient)" font-family="Arial, sans-serif" font-size="12" font-weight="bold" filter="url(#glow)">AI</text>
+                </svg>
+                <div class="logo-text">
+                    <h1>AlicIA</h1>
+                    <span class="subtitle">Asistente Virtual</span>
+                </div>
+            </div>
+            <p>Agentic Automation usando UiPath - Indra Colombia</p>
         </div>
 
         <div class="main-content">
@@ -591,116 +1238,55 @@
                         <p style="margin-top: 10px;">Video Stream</p>
                     </div>
                     
-                    <!-- Controles de chroma key -->
-                    <div id="videoControls" style="position: absolute; top: 10px; right: 10px; display: none; gap: 8px; flex-direction: column;">
-                        <div style="display: flex; gap: 8px;">
-                            <button onclick="toggleVideoMode('original')" class="video-filter-btn" title="Video Original">
-                                🎬
-                            </button>
-                            <button onclick="toggleVideoMode('chromakey')" class="video-filter-btn active" title="Chroma Key">
-                                🎯
-                            </button>
+
+
+                    <!-- Botón flotante de audio -->
+                    <div class="floating-audio-button" id="floatingAudioButton">
+                        <button id="floatingRecordBtn" class="floating-record-button" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" disabled>
+                            🎤
+                        </button>
+                        <div class="floating-audio-status" id="floatingAudioStatus">
+                            Presiona y habla
                         </div>
-                        
-                        <!-- Controles de ajuste (solo visible en modo chroma key) -->
-                        <div id="chromaControls" style="background: rgba(0,0,0,0.7); padding: 8px; border-radius: 8px; display: none;">
-                            <div style="margin-bottom: 4px; font-size: 11px; color: white;">Tolerancia</div>
-                            <input type="range" id="toleranceSlider" min="10" max="100" value="30" style="width: 80px;">
+                        <div class="floating-transcription" id="floatingTranscription" style="display: none;">
+                            Transcripción aparecerá aquí...
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="conversation-section" id="conversationSection">
+                    <div class="conversation-header" onclick="toggleConversationCollapse()">
+                        <h3 class="conversation-title">💬 Transcripción de Conversación</h3>
+                        <span class="conversation-collapse-icon">▼</span>
+                    </div>
+                    <div class="conversation-content" id="conversationContent">
+                        <div id="conversationContainer">
+                            <div class="conversation-placeholder">
+                                <p>La conversación con AlicIA aparecerá aquí...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="log-section">
-                    <h3>📋 Logs del Sistema</h3>
-                    <div id="logContainer"></div>
-                </div>
             </div>
 
             <div class="controls-section">
+                <!-- PRIMERA SECCIÓN: Validación de Correo Electrónico -->
                 <div class="task-section">
-                    <h3>💬 Enviar Mensaje al Avatar</h3>
-                    
-                    <!-- Tabs para alternar entre modos -->
-                    <div class="input-mode-tabs">
-                        <button class="tab-button active" onclick="switchInputMode('text')" id="textTab">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14,2 14,8 20,8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                            </svg>
-                            Texto
-                        </button>
-                        <button class="tab-button" onclick="switchInputMode('audio')" id="audioTab">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 1c-4.7 0-8.5 3.8-8.5 8.5 0 1.5.4 2.9 1 4.1"></path>
-                                <path d="M19.5 9.5c0-4.7-3.8-8.5-8.5-8.5"></path>
-                                <circle cx="12" cy="12" r="2"></circle>
-                            </svg>
-                            Audio
-                        </button>
-                    </div>
+                    <h3>📧 Validación de Correo Electrónico</h3>
 
-                    <!-- Panel de modo texto -->
-                    <div class="input-panel active" id="textPanel">
-                        <textarea id="taskText" placeholder="Escribe el texto que el avatar debe repetir...">Hola, ¿quien eres?</textarea>
-                        <button id="sendTaskBtn" class="btn-primary" onclick="sendTask()" disabled style="margin-top: 10px; width: 100%;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                            Enviar Texto
-                        </button>
-                    </div>
-
-                    <!-- Panel de modo audio -->
-                    <div class="input-panel" id="audioPanel">
-                        <div class="audio-controls">
-                            <button id="recordBtn" class="record-button" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" disabled>
-                                🎤
-                            </button>
-                            <div class="record-status" id="recordStatus">
-                                Mantén presionado para grabar
-                            </div>
-                            <div class="transcription-preview empty" id="transcriptionPreview">
-                                El texto transcrito aparecerá aquí...
-                            </div>
-                            <button id="sendTranscriptionBtn" class="btn-primary" onclick="sendTranscribedText()" disabled style="width: 100%; display: none;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                </svg>
-                                Enviar Audio Transcrito
-                            </button>
-                        </div>
-                    </div>
+                    <textarea id="taskText" placeholder="Ingresa tu correo electrónico aquí..."></textarea>
+                    <button id="sendTaskBtn" class="btn-primary" onclick="validateEmail()" style="margin-top: 10px; width: 100%;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                        Validar Email
+                    </button>
                 </div>
 
-                <div class="status-card">
-                    <h3>
-                        <span class="status-indicator" id="statusIndicator"></span>
-                        Estado de Conexión
-                    </h3>
-                    <div class="status-info">
-                        <div class="status-item">
-                            <span class="status-label">Session ID:</span>
-                            <span class="status-value" id="sessionId">-</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">WebSocket:</span>
-                            <span class="status-value" id="wsStatus">Desconectado</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">WebRTC:</span>
-                            <span class="status-value" id="rtcStatus">No iniciado</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">Estado:</span>
-                            <span class="status-value" id="sessionStatus">Inactivo</span>
-                        </div>
-                    </div>
-                </div>
 
+                <!-- SEGUNDA SECCIÓN: Botones de Control -->
                 <div class="button-group">
                     <button id="createBtn" class="btn-primary" onclick="createSession()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -719,20 +1305,46 @@
                         Cerrar Sesión
                     </button>
                 </div>
+
+                <!-- TERCERA SECCIÓN: Consultas de Facturación -->
+                <div class="task-section">
+                    <h3>💰 Consultas de Facturación</h3>
+
+                    <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('¿Por qué me están cobrando un dashboard interactivo?. Esto no hizo parte del trabajo')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
+                        ¿Por qué me están cobrando un dashboard interactivo?. Esto no hizo parte del trabajo
+                    </button>
+
+                    <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('La tarifa del desarrollador RPA senior que me están cobrando es de COP 90.000/ hora, esta tarifa no es correcta')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
+                        La tarifa del desarrollador RPA senior que me están cobrando es de COP 90.000/ hora, esta tarifa no es correcta
+                    </button>
+
+                    <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('Voy a necesitar servicios de soporte fuera de horario, los domingos y festivos, ¿qué tarifa se aplica?')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
+                        Voy a necesitar servicios de soporte fuera de horario, los domingos y festivos, ¿qué tarifa se aplica?
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script>
-        // Configuración
-        const API_BASE_URL = 'http://localhost:8000';
-        const WS_BASE_URL = 'ws://localhost:8000';
+        // Configuración dinámica para local y producción (Vercel)
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE_URL = isLocal ? 'http://localhost:8000' : '';
+        const WS_BASE_URL = isLocal ? 'ws://localhost:8000' : `wss://${window.location.host}`;
 
         // Variables globales
         let currentSessionId = null;
         let ws = null;
         let peerConnection = null;
         let remoteStream = null;
+        let welcomeMessageSent = false; // Track if welcome message has been sent for this session
+        let isEmailValidated = false; // Track if email has been successfully validated
+        let validatedEmail = null; // Store the validated email
+
+        // Variables para control de estado del botón
+        let taskProcessingTimeout = null;
+        let originalButtonText = 'Validar Email';
         
         // Variables para chroma key
         let canvas, ctx, animationFrame;
@@ -751,51 +1363,144 @@
             iceServers: []
         };
 
-        // Funciones de logging
-        function addLog(message, type = 'info') {
-            const logContainer = document.getElementById('logContainer');
-            const logEntry = document.createElement('div');
-            logEntry.className = `log-entry ${type}`;
-            const timestamp = new Date().toLocaleTimeString();
-            logEntry.textContent = `[${timestamp}] ${message}`;
-            logContainer.appendChild(logEntry);
-            logContainer.scrollTop = logContainer.scrollHeight;
+        // Funciones de logging separadas para conversación y logs técnicos
+        function addConversationEntry(speaker, message, type = 'user') {
+            const conversationContainer = document.getElementById('conversationContainer');
+            const entry = document.createElement('div');
+            entry.className = `conversation-entry ${type}`;
 
-            // Limitar a 50 logs
-            while (logContainer.children.length > 50) {
-                logContainer.removeChild(logContainer.firstChild);
+            const timestamp = new Date().toLocaleTimeString('es-CO', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            entry.innerHTML = `
+                <div class="conversation-speaker ${type}">${speaker}:</div>
+                <div class="conversation-message">"${message}"</div>
+                <div class="conversation-time">${timestamp}</div>
+            `;
+
+            conversationContainer.appendChild(entry);
+            conversationContainer.scrollTop = conversationContainer.scrollHeight;
+
+            // Limitar a 100 entradas de conversación
+            while (conversationContainer.children.length > 100) {
+                conversationContainer.removeChild(conversationContainer.firstChild);
+            }
+        }
+
+        // Logs técnicos solo van a consola (con opción de mostrar errores críticos)
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+
+            // Enviar todos los logs a consola del navegador
+            switch(type) {
+                case 'error':
+                    console.error(logMessage);
+                    // Solo errores críticos se muestran como notificación pequeña
+                    if (message.includes('Error') || message.includes('❌')) {
+                        showCriticalError(message);
+                    }
+                    break;
+                case 'success':
+                    console.log(`✅ ${logMessage}`);
+                    break;
+                case 'info':
+                default:
+                    console.log(logMessage);
+                    break;
+            }
+        }
+
+        // Mostrar errores críticos como notificación pequeña y temporal
+        function showCriticalError(message) {
+            const notification = document.createElement('div');
+            notification.className = 'critical-error-notification';
+            notification.textContent = message.replace(/❌|⚠️/, '').trim();
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(239, 68, 68, 0.9);
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 10000;
+                max-width: 300px;
+                word-wrap: break-word;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-remover después de 4 segundos
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 4000);
+        }
+
+        // Ocultar placeholder cuando comience la conversación
+        function hideConversationPlaceholder() {
+            const placeholder = document.querySelector('.conversation-placeholder');
+            if (placeholder) {
+                placeholder.style.display = 'none';
             }
         }
 
         // Actualizar UI
         function updateUI(state) {
-            const statusIndicator = document.getElementById('statusIndicator');
-            const sessionStatus = document.getElementById('sessionStatus');
             const createBtn = document.getElementById('createBtn');
             const closeBtn = document.getElementById('closeBtn');
             const sendTaskBtn = document.getElementById('sendTaskBtn');
+            const floatingQuestions = document.getElementById('floatingQuestions');
 
             switch(state) {
                 case 'idle':
-                    statusIndicator.classList.remove('active');
-                    sessionStatus.textContent = 'Inactivo';
                     createBtn.disabled = false;
                     closeBtn.disabled = true;
-                    sendTaskBtn.disabled = true;
+                    // Email validation button always enabled (independent of session)
+                    sendTaskBtn.disabled = false;
+                    setQuestionButtonsState(true); // Deshabilitar preguntas
+                    resetCreateButtonState(); // Restaurar botón a estado normal
+                    if (floatingQuestions) {
+                        floatingQuestions.classList.remove('active'); // Ocultar chips flotantes
+                    }
+                    break;
+                case 'creating_session':
+                    setCreateButtonProcessing(); // Mostrar feedback inmediato
+                    closeBtn.disabled = true;
+                    // Email validation button always enabled (independent of session)
+                    sendTaskBtn.disabled = false;
+                    setQuestionButtonsState(true); // Deshabilitar preguntas
+                    if (floatingQuestions) {
+                        floatingQuestions.classList.remove('active');
+                    }
                     break;
                 case 'session_created':
-                    statusIndicator.classList.add('active');
-                    sessionStatus.textContent = 'Sesión Creada';
-                    createBtn.disabled = true;
+                    resetCreateButtonState(true); // Restaurar contenido visual pero mantener deshabilitado
                     closeBtn.disabled = false;
-                    sendTaskBtn.disabled = true;
+                    // Email validation button always enabled (independent of session)
+                    sendTaskBtn.disabled = false;
+                    setQuestionButtonsState(true); // Deshabilitar preguntas
+                    if (floatingQuestions) {
+                        floatingQuestions.classList.remove('active');
+                    }
                     break;
                 case 'connected':
-                    statusIndicator.classList.add('active');
-                    sessionStatus.textContent = 'Conectado';
-                    createBtn.disabled = true;
+                    resetCreateButtonState(true); // Restaurar contenido visual pero mantener deshabilitado
                     closeBtn.disabled = false;
+                    // Email validation button always enabled (independent of session)
                     sendTaskBtn.disabled = false;
+                    setQuestionButtonsState(false); // Habilitar preguntas
+                    if (floatingQuestions) {
+                        floatingQuestions.classList.add('active'); // Mostrar chips flotantes
+                    }
                     break;
             }
 
@@ -803,27 +1508,129 @@
             updateAudioButtonStates();
         }
 
-        // Conectar a LiveKit usando las credenciales de HeyGen
+        // Habilitar/Deshabilitar botones de preguntas sugeridas
+        function setQuestionButtonsState(disabled) {
+            const questionButtons = document.querySelectorAll('.question-btn');
+            questionButtons.forEach(btn => {
+                if (btn) {
+                    btn.disabled = disabled;
+                }
+            });
+        }
+
+        // Nueva función para actualizar estado de botones basado en validación de email
+        function updateQuestionButtonsState() {
+            const questionButtons = document.querySelectorAll('.question-btn');
+            questionButtons.forEach(btn => {
+                if (btn) {
+                    if (isEmailValidated) {
+                        btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.title = 'Email validado - Puedes usar esta funcionalidad';
+                    } else {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.title = 'Debes validar tu email primero';
+                    }
+                }
+            });
+        }
+
+        // Funciones para manejar el estado del botón "Crear Sesión"
+        function setCreateButtonProcessing() {
+            const createBtn = document.getElementById('createBtn');
+
+            createBtn.disabled = true;
+            createBtn.classList.add('btn-processing');
+            createBtn.innerHTML = `
+                <div class="loading"></div>
+                Creando Sesión...
+            `;
+        }
+
+        function resetCreateButtonState(keepDisabled = false) {
+            const createBtn = document.getElementById('createBtn');
+
+            createBtn.disabled = keepDisabled;
+            createBtn.classList.remove('btn-processing');
+            createBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Crear Sesión
+            `;
+        }
+
+        // Funciones para manejar estados del botón de envío
+        function setButtonProcessing(message = 'Enviando...') {
+            const sendTaskBtn = document.getElementById('sendTaskBtn');
+
+            sendTaskBtn.disabled = true;
+            sendTaskBtn.classList.add('btn-processing');
+            sendTaskBtn.innerHTML = `
+                <div class="loading"></div>
+                ${message}
+            `;
+
+            // Deshabilitar también los botones de preguntas durante el procesamiento
+            setQuestionButtonsState(true);
+
+            // Timeout de seguridad para re-habilitar botón
+            if (taskProcessingTimeout) {
+                clearTimeout(taskProcessingTimeout);
+            }
+            taskProcessingTimeout = setTimeout(() => {
+                resetButtonState();
+                addLog('⚠️ Timeout procesando mensaje - botón re-habilitado', 'info');
+            }, 30000); // 30 segundos
+        }
+
+        function resetButtonState() {
+            const sendTaskBtn = document.getElementById('sendTaskBtn');
+
+            sendTaskBtn.disabled = false;
+            sendTaskBtn.classList.remove('btn-processing');
+            sendTaskBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Validar Email
+            `;
+
+            // Re-habilitar botones de preguntas si hay conexión activa
+            if (ws && ws.readyState === WebSocket.OPEN && currentSessionId) {
+                setQuestionButtonsState(false);
+            }
+
+            if (taskProcessingTimeout) {
+                clearTimeout(taskProcessingTimeout);
+                taskProcessingTimeout = null;
+            }
+        }
+
+        // Conectar el video usando las credenciales del avatar
         async function startRtcConnection(data) {
             if (peerConnection) {
                 addLog("Cerrando conexión WebRTC existente.", 'info');
                 peerConnection.close();
             }
             
-            addLog("Iniciando conexión a LiveKit...", 'info');
-            document.getElementById('rtcStatus').textContent = 'Conectando...';
+            addLog("Iniciando conexión de video...", 'info');
             
             const { livekit_url, livekit_token } = data;
             
             if (!livekit_url || !livekit_token) {
-                addLog("Faltan credenciales de LiveKit en la respuesta.", 'error');
+                addLog("Faltan credenciales de video en la respuesta.", 'error');
                 return;
             }
             
             try {
                 // Importar LiveKit desde CDN si no está disponible
                 if (typeof LivekitClient === 'undefined') {
-                    addLog("Cargando LiveKit SDK...", 'info');
+                addLog("Cargando SDK de video...", 'info');
                     const script = document.createElement('script');
                     script.src = 'https://unpkg.com/livekit-client@2.15.6/dist/livekit-client.umd.js';
                     document.head.appendChild(script);
@@ -831,7 +1638,7 @@
                     await new Promise((resolve, reject) => {
                         script.onload = resolve;
                         script.onerror = (error) => {
-                            addLog("Error cargando LiveKit desde unpkg, intentando con jsDelivr...", 'error');
+                            addLog("Error cargando SDK desde unpkg, intentando con jsDelivr...", 'error');
                             // Fallback a jsDelivr
                             const fallbackScript = document.createElement('script');
                             fallbackScript.src = 'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.js';
@@ -842,40 +1649,56 @@
                     });
                 }
                 
-                // Crear room de LiveKit
+                // Crear conexión de video
                 const room = new LivekitClient.Room();
                 
                 // Configurar event listeners
                 room.on(LivekitClient.RoomEvent.Connected, () => {
-                    addLog("✅ Conectado a LiveKit", 'success');
-                    document.getElementById('rtcStatus').textContent = 'Conectado';
+                    addLog("✅ Conexión de video establecida", 'success');
                     updateUI('connected');
                 });
                 
                 room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
                     if (track.kind === LivekitClient.Track.Kind.Video) {
-                        addLog("✅ Stream de video recibido de HeyGen.", 'success');
+                        addLog("✅ Stream de video de AlicIA recibido.", 'success');
                         const element = track.attach();
                         const remoteVideo = document.getElementById('remoteVideo');
                         remoteVideo.srcObject = element.srcObject;
                         document.getElementById('videoPlaceholder').style.display = 'none';
-                        document.getElementById('videoControls').style.display = 'flex';
-                        
+
                         // Asegurar que el audio se reproduzca
                         remoteVideo.muted = false;
                         remoteVideo.play().catch(e => {
                             addLog("Reproducción automática bloqueada. Haz clic en el video para activar el audio.", 'info');
                         });
-                        
+
+                        // Enviar mensaje de bienvenida automático después de que el video esté listo
+                        setTimeout(() => {
+                            sendWelcomeMessage();
+                        }, 2000); // 2 segundos para asegurar que la conexión esté estable
+
                         // Activar chroma key por defecto
                         setTimeout(() => {
-                            toggleVideoMode('chromakey');
-                            addLog("Activando modo chroma key por defecto.", 'info');
+                            // Initialize chroma key mode directly
+                            if (initChromaKey()) {
+                                chromaKeyActive = true;
+                                const displayVideo = document.getElementById('displayVideo');
+                                const canvas = document.getElementById('videoCanvas');
+
+                                displayVideo.style.display = 'none';
+                                canvas.style.display = 'block';
+
+                                // Start processing
+                                processChromaKey();
+                                addLog("✅ Modo chroma key activado por defecto", 'success');
+                            } else {
+                                addLog("Error inicializando chroma key", 'error');
+                            }
                         }, 1500);
                     }
                     
                     if (track.kind === LivekitClient.Track.Kind.Audio) {
-                        addLog("✅ Stream de audio recibido de HeyGen.", 'success');
+                        addLog("✅ Stream de audio de AlicIA recibido.", 'success');
                         const element = track.attach();
                         const remoteVideo = document.getElementById('remoteVideo');
                         // Para audio, necesitamos asegurar que el video element pueda reproducir audio
@@ -893,8 +1716,7 @@
                 });
                 
                 room.on(LivekitClient.RoomEvent.Disconnected, () => {
-                    addLog("Desconectado de LiveKit", 'info');
-                    document.getElementById('rtcStatus').textContent = 'Desconectado';
+                    addLog("Conexión de video cerrada", 'info');
                     updateUI('session_created');
                 });
                 
@@ -902,23 +1724,30 @@
                 await room.connect(livekit_url, livekit_token);
                 
             } catch (error) {
-                addLog(`Error conectando a LiveKit: ${error.message}`, 'error');
-                document.getElementById('rtcStatus').textContent = 'Error';
+                addLog(`Error en conexión de video: ${error.message}`, 'error');
             }
         }
     
+    // Función para compatibilidad con el botón onclick
+    function createSession() {
+        createAndConnectSession();
+    }
+
     /**
      * Función principal que se llama al hacer clic en el botón.
      * Crea la sesión y luego inicia la conexión WebSocket.
      */
     async function createAndConnectSession() {
+        // Mostrar feedback inmediato antes de cualquier validación
+        updateUI('creating_session');
+
         if (currentSessionId) {
             addLog("Ya existe una sesión activa.", 'info');
+            updateUI('idle'); // Restaurar estado si ya hay sesión
             return;
         }
 
-        updateUI('creating_session');
-        addLog("Creando nueva sesión en HeyGen...", 'info');
+        addLog("Creando nueva sesión con AlicIA...", 'info');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/sessions/create`, {
@@ -934,10 +1763,14 @@
 
             const data = await response.json();
             currentSessionId = data.session_id;
-            
+
             addLog(`✅ Sesión creada con éxito: ${currentSessionId}`, 'success');
-            document.getElementById('sessionId').textContent = currentSessionId;
             updateUI('session_created');
+
+            // Asociar email validado con la sesión si existe
+            if (isEmailValidated && validatedEmail) {
+                await associateEmailWithSession(validatedEmail);
+            }
 
             // Iniciar la conexión WebSocket automáticamente
             connectWebSocket();
@@ -953,7 +1786,7 @@
 
         } catch (error) {
             addLog(`Error al crear la sesión: ${error.message}`, 'error');
-            updateUI('idle');
+            updateUI('idle'); // Restaurar estado del botón en caso de error
         }
     }
 
@@ -972,41 +1805,198 @@
 
         addLog(`Conectando WebSocket a ${WS_BASE_URL}/ws/${currentSessionId}`, 'info');
         ws = new WebSocket(`${WS_BASE_URL}/ws/${currentSessionId}`);
-        document.getElementById('wsStatus').textContent = 'Conectando...';
 
         ws.onopen = () => {
             addLog("✅ WebSocket conectado.", 'success');
-            document.getElementById('wsStatus').textContent = 'Conectado';
         };
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            addLog(`Mensaje recibido del backend: ${message.type}`, 'info');
 
             if (message.type === 'session_info') {
                 // Iniciar WebRTC cuando recibimos la información de la sesión
                 startRtcConnection(message.data);
+                addLog(`Información de sesión recibida`, 'info');
+            } else if (message.type === 'processing') {
+                // Mostrar estado de procesamiento de OpenAI (solo log técnico)
+                addLog(`🤖 ${message.message}`, 'info');
+                setButtonProcessing('Procesando con AlicIA...');
+            } else if (message.type === 'task_sent') {
+                // Registrar solo la respuesta de AlicIA (el usuario ya se agregó en sendTask)
+                if (message.openai_response) {
+                    // Agregar respuesta de AlicIA
+                    addConversationEntry('AlicIA', message.openai_response, 'assistant');
+                }
+
+                // Log técnico solo a consola
+                addLog(`✅ ${message.message}`, 'success');
+
+                // Re-habilitar botón cuando la tarea se complete
+                resetButtonState();
             } else if (message.type === 'error') {
-                addLog(`Error desde el WebSocket: ${message.message}`, 'error');
+                addLog(`❌ ${message.message}`, 'error');
+                // Re-habilitar botón en caso de error
+                resetButtonState();
+            } else {
+                addLog(`📨 ${message.type}: ${message.message || 'Sin mensaje'}`, 'info');
             }
         };
 
         ws.onclose = () => {
             addLog("WebSocket desconectado.", 'info');
-            document.getElementById('wsStatus').textContent = 'Desconectado';
+            // Reset button state when connection is lost
+            resetButtonState();
         };
 
         ws.onerror = (error) => {
             addLog(`Error de WebSocket: ${error.message || 'Error desconocido'}`, 'error');
-            document.getElementById('wsStatus').textContent = 'Error';
+            // Reset button state on WebSocket error
+            resetButtonState();
         };
     }
 
 
-        // Enviar tarea
+        // Validar email
+        async function validateEmail() {
+            const emailText = document.getElementById('taskText').value.trim();
+            const emailInput = document.getElementById('taskText');
+            const validateBtn = document.getElementById('sendTaskBtn');
+
+            if (!emailText) {
+                showEmailValidationResult(false, 'El campo de email no puede estar vacío');
+                return;
+            }
+
+            // Mostrar estado de procesamiento
+            validateBtn.innerHTML = `
+                <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                Validando...
+            `;
+
+            try {
+                // Llamar al API para validar email
+                const response = await fetch('/api/email/validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailText
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.is_valid) {
+                    // Email válido - actualizar estado global
+                    isEmailValidated = true;
+                    validatedEmail = emailText;
+
+                    // Asociar email con la sesión actual si existe
+                    if (currentSessionId) {
+                        await associateEmailWithSession(emailText);
+                    }
+
+                    showEmailValidationResult(true, 'Email válido ✓');
+                    addLog(`✅ Email válido: ${emailText}`, 'success');
+
+                    // Habilitar botones de preguntas
+                    updateQuestionButtonsState();
+                } else {
+                    isEmailValidated = false;
+                    validatedEmail = null;
+                    showEmailValidationResult(false, result.message || 'Formato de email inválido');
+                    addLog(`❌ Email inválido: ${emailText}`, 'error');
+
+                    // Deshabilitar botones de preguntas
+                    updateQuestionButtonsState();
+                }
+            } catch (error) {
+                console.error('Error validating email:', error);
+                isEmailValidated = false;
+                validatedEmail = null;
+                showEmailValidationResult(false, 'Error validating email');
+                addLog(`❌ Error validando email: ${error.message}`, 'error');
+
+                // Deshabilitar botones de preguntas
+                updateQuestionButtonsState();
+            }
+        }
+
+        // Función para asociar email con sesión
+        async function associateEmailWithSession(email) {
+            if (!currentSessionId) return;
+
+            try {
+                const response = await fetch(`/api/sessions/${currentSessionId}/email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        email: email
+                    })
+                });
+
+                if (response.ok) {
+                    addLog(`✅ Email asociado con sesión ${currentSessionId}`, 'success');
+                } else {
+                    console.warn('Failed to associate email with session');
+                }
+            } catch (error) {
+                console.error('Error associating email with session:', error);
+            }
+        }
+
+        // Mostrar resultado de validación de email
+        function showEmailValidationResult(isValid, message) {
+            const emailInput = document.getElementById('taskText');
+            const validateBtn = document.getElementById('sendTaskBtn');
+
+            // Remover clases previas
+            emailInput.classList.remove('email-valid', 'email-invalid');
+            validateBtn.classList.remove('btn-success', 'btn-danger');
+
+            if (isValid) {
+                emailInput.classList.add('email-valid');
+                validateBtn.classList.add('btn-success');
+                validateBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    ${message}
+                `;
+            } else {
+                emailInput.classList.add('email-invalid');
+                validateBtn.classList.add('btn-danger');
+                validateBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                    ${message}
+                `;
+            }
+
+            // Restaurar estado después de 3 segundos
+            setTimeout(() => {
+                emailInput.classList.remove('email-valid', 'email-invalid');
+                validateBtn.classList.remove('btn-success', 'btn-danger');
+                validateBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    Validar Email
+                `;
+            }, 3000);
+        }
+
+        // Enviar tarea (función original comentada para referencia)
         function sendTask() {
             const taskText = document.getElementById('taskText').value.trim();
-            
+
             if (!taskText) {
                 addLog('El texto no puede estar vacío', 'error');
                 return;
@@ -1017,13 +2007,104 @@
                 return;
             }
 
+            // Mostrar mensaje del usuario inmediatamente en la transcripción
+            hideConversationPlaceholder();
+            addConversationEntry('Usuario', taskText, 'user');
+
+            // Deshabilitar botón y mostrar estado de envío
+            setButtonProcessing('Enviando...');
+
             ws.send(JSON.stringify({
                 type: 'task',
-                text: taskText,
-                task_type: 'chat'  // Especificar explícitamente el tipo de tarea
+                text: taskText
             }));
 
-            addLog(`Enviando tarea: "${taskText.substring(0, 50)}..."`, 'info');
+            // Log técnico a consola
+            addLog(`📤 Enviando mensaje: "${taskText.substring(0, 50)}..."`, 'info');
+
+            // Limpiar textarea después de enviar
+            document.getElementById('taskText').value = '';
+        }
+
+        // Enviar mensaje de bienvenida automático
+        function sendWelcomeMessage() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('WebSocket no conectado para mensaje de bienvenida', 'error');
+                return;
+            }
+
+            if (welcomeMessageSent) {
+                addLog('Mensaje de bienvenida ya enviado para esta sesión', 'info');
+                return;
+            }
+
+            const welcomeText = "Hola! Soy AlicIA, asistente virtual de NovaIA, me dedico a revisar que todo lo incluido en las facturas emitidas por nuestros clientes esté alineado con los contratos. Reporto los casos en los que encuentre diferencias en precio, tipos de servicios, términos de pago, cargos no autorizados ó duración de los servicios. Con mi trabajo ayudo a disminuir quejas contractuales, mantener la exactitud de la información y reducir los riesgos de errores. ¿En que puedo ayudarte hoy?";
+
+            // Marcar como enviado para evitar duplicados
+            welcomeMessageSent = true;
+
+            // Preparar transcripción
+            hideConversationPlaceholder();
+
+            // Enviar directo al avatar sin procesar por OpenAI (es un mensaje predefinido)
+            ws.send(JSON.stringify({
+                type: 'welcome_message',
+                text: welcomeText
+            }));
+
+            // Agregar a la transcripción inmediatamente
+            addConversationEntry('AlicIA', welcomeText, 'assistant');
+
+            // Log técnico
+            addLog('👋 Mensaje de bienvenida enviado automáticamente', 'success');
+        }
+
+        // Enviar pregunta predefinida
+        function sendPredefinedQuestion(question) {
+            // Verificar validación de email PRIMERO
+            if (!isEmailValidated || !validatedEmail) {
+                addLog('⚠️ Debes validar tu email antes de usar esta funcionalidad', 'warning');
+
+                // Resaltar brevemente el campo de email para guiar al usuario
+                const emailInput = document.getElementById('taskText');
+                const validateBtn = document.getElementById('sendTaskBtn');
+
+                if (emailInput && validateBtn) {
+                    // Animación sutil para llamar la atención
+                    emailInput.style.animation = 'pulse-border 1s ease-in-out';
+                    validateBtn.style.animation = 'pulse-border 1s ease-in-out';
+
+                    // Remover animación después
+                    setTimeout(() => {
+                        emailInput.style.animation = '';
+                        validateBtn.style.animation = '';
+                    }, 1000);
+                }
+
+                return; // Salir sin hacer nada más
+            }
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('WebSocket no conectado', 'error');
+                return;
+            }
+
+            // Mostrar pregunta del usuario inmediatamente en la transcripción
+            hideConversationPlaceholder();
+            addConversationEntry('Usuario', question, 'user');
+
+            // Deshabilitar botones y mostrar estado de envío
+            setButtonProcessing('Enviando...');
+            setQuestionButtonsState(true); // Deshabilitar botones de preguntas
+
+            ws.send(JSON.stringify({
+                type: 'task',
+                text: question,
+                question_case: question  // Agregar el caso específico para UiPath
+            }));
+
+            // Log técnico a consola
+            addLog(`📤 Enviando pregunta predefinida: "${question.substring(0, 50)}..."`, 'info');
         }
 
         // Cerrar sesión
@@ -1110,14 +2191,14 @@
             remoteVideo.style.display = 'none';
             displayVideo.style.display = 'none';
             canvas.style.display = 'none';
-            document.getElementById('videoControls').style.display = 'none';
             document.getElementById('videoPlaceholder').style.display = 'block';
 
             // Resetear estado
             currentSessionId = null;
-            document.getElementById('sessionId').textContent = '-';
-            document.getElementById('wsStatus').textContent = 'Desconectado';
-            document.getElementById('rtcStatus').textContent = 'No iniciado';
+            welcomeMessageSent = false; // Reset welcome message state for new session
+
+            // Resetear estado del botón
+            resetButtonState();
 
             updateUI('idle');
             
@@ -1186,9 +2267,9 @@
                         // Gradiente diagonal
                         const gradientFactor = (y + x * 0.3) / (canvas.height + canvas.width * 0.3);
                         
-                        data[i] = Math.floor(15 + gradientFactor * 25);     // R (azul oscuro)
-                        data[i + 1] = Math.floor(20 + gradientFactor * 35); // G
-                        data[i + 2] = Math.floor(45 + gradientFactor * 60); // B (azul más claro)
+                        data[i] = Math.floor(20 + gradientFactor * 40);     // R (más rosa)
+                        data[i + 1] = Math.floor(5 + gradientFactor * 15);  // G (menos verde)
+                        data[i + 2] = Math.floor(30 + gradientFactor * 50); // B (cyan/azul)
                         // Alpha se mantiene igual para preservar transparencia
                     }
                 }
@@ -1198,8 +2279,16 @@
                 
             } catch (error) {
                 addLog(`Error en procesamiento chroma key: ${error.message}`, 'error');
-                // Fallback: mostrar video original
-                toggleVideoMode('original');
+                // Fallback: show original video
+                chromaKeyActive = false;
+                const displayVideo = document.getElementById('displayVideo');
+                const canvas = document.getElementById('videoCanvas');
+                const remoteVideo = document.getElementById('remoteVideo');
+
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+                canvas.style.display = 'none';
+                displayVideo.style.display = 'block';
+                displayVideo.srcObject = remoteVideo.srcObject;
                 return;
             }
             
@@ -1234,78 +2323,18 @@
                 return false;
             }
             
-            // Actualizar tolerancia desde slider
-            const slider = document.getElementById('toleranceSlider');
-            if (slider) {
-                slider.addEventListener('input', (e) => {
-                    tolerance = parseInt(e.target.value);
-                    addLog(`Tolerancia chroma key: ${tolerance}`, 'info');
-                });
-                tolerance = parseInt(slider.value);
-            }
+            // Tolerance fixed at optimal value for chroma key
+            tolerance = 30;
             
             addLog("✅ Sistema de chroma key inicializado correctamente", 'success');
             return true;
         }
         
-        // Cambiar modo de video
-        function toggleVideoMode(mode) {
-            const buttons = document.querySelectorAll('.video-filter-btn');
-            const canvas = document.getElementById('videoCanvas');
-            const displayVideo = document.getElementById('displayVideo');
-            const remoteVideo = document.getElementById('remoteVideo');
-            const chromaControls = document.getElementById('chromaControls');
-            
-            // Remover clase active
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            if (mode === 'original') {
-                // Modo original: mostrar video directo
-                chromaKeyActive = false;
-                if (animationFrame) cancelAnimationFrame(animationFrame);
-                
-                canvas.style.display = 'none';
-                displayVideo.style.display = 'block';
-                displayVideo.srcObject = remoteVideo.srcObject;
-                displayVideo.className = ''; // Sin clases de filtro
-                chromaControls.style.display = 'none';
-                
-                document.querySelector('[onclick="toggleVideoMode(\'original\')"]').classList.add('active');
-                addLog("Modo: Video original de HeyGen (sin filtros)", 'info');
-                
-            } else if (mode === 'chromakey') {
-                // Intentar inicializar chroma key
-                if (!ctx && !initChromaKey()) {
-                    // Fallback: usar filtros CSS si canvas falla
-                    addLog("Fallback: Usando filtros CSS", 'info');
-                    displayVideo.style.display = 'block';
-                    displayVideo.srcObject = remoteVideo.srcObject;
-                    displayVideo.className = ''; // Sin clases de filtro
-                    chromaControls.style.display = 'none';
-                    
-                    document.querySelector('[onclick="toggleVideoMode(\'chromakey\')"]').classList.add('active');
-                    return;
-                }
-                
-                // Modo chroma key: mostrar canvas procesado
-                chromaKeyActive = true;
-                
-                displayVideo.style.display = 'none';  
-                canvas.style.display = 'block';
-                chromaControls.style.display = 'block';
-                
-                // Iniciar procesamiento
-                processChromaKey();
-                
-                document.querySelector('[onclick="toggleVideoMode(\'chromakey\')"]').classList.add('active');
-                addLog("✅ Modo: Chroma key selectivo activado", 'success');
-            }
-        }
 
         // Manejar Enter en el textarea
         document.getElementById('taskText').addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && e.ctrlKey) {
-                sendTask();
+                validateEmail();
             }
         });
         // Cambiar la llamada onclick del botón "Crear Sesión"
@@ -1336,15 +2365,19 @@
 
         // Actualizar estado de botones de audio
         function updateAudioButtonStates() {
-            const recordBtn = document.getElementById('recordBtn');
-            const sendTranscriptionBtn = document.getElementById('sendTranscriptionBtn');
-            
+            const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+            const floatingAudioButton = document.getElementById('floatingAudioButton');
+
             // Habilitar grabación solo si hay sesión activa y stream disponible
             const sessionActive = currentSessionId && ws && ws.readyState === WebSocket.OPEN && audioStream;
-            recordBtn.disabled = !sessionActive;
-            
-            // Ocultar botón de envío manual ya que ahora es automático
-            sendTranscriptionBtn.style.display = 'none';
+            floatingRecordBtn.disabled = !sessionActive;
+
+            // Mostrar/ocultar el botón flotante según el estado de la sesión
+            if (sessionActive) {
+                floatingAudioButton.classList.add('active');
+            } else {
+                floatingAudioButton.classList.remove('active');
+            }
         }
 
         // Inicializar acceso al micrófono
@@ -1387,10 +2420,10 @@
                 isRecording = true;
                 
                 // Actualizar UI
-                const recordBtn = document.getElementById('recordBtn');
-                const recordStatus = document.getElementById('recordStatus');
-                recordBtn.classList.add('recording');
-                recordStatus.textContent = '🔴 Grabando... (suelta para transcribir y enviar)';
+                const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+                const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+                floatingRecordBtn.classList.add('recording');
+                floatingAudioStatus.textContent = '🔴 Grabando...';
                 
                 addLog('🎤 Iniciada grabación de audio (usando stream persistente)', 'info');
                 
@@ -1408,17 +2441,17 @@
             isRecording = false;
             
             // Actualizar UI
-            const recordBtn = document.getElementById('recordBtn');
-            const recordStatus = document.getElementById('recordStatus');
-            recordBtn.classList.remove('recording');
-            recordStatus.textContent = '🔄 Procesando audio...';
+            const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+            const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+            floatingRecordBtn.classList.remove('recording');
+            floatingAudioStatus.textContent = '🔄 Procesando...';
         }
 
         // Procesar grabación y enviar a STT
         async function processRecording() {
             if (audioChunks.length === 0) {
                 addLog('No se grabó audio', 'error');
-                document.getElementById('recordStatus').textContent = 'Mantén presionado para grabar';
+                document.getElementById('floatingAudioStatus').textContent = 'Presiona y habla';
                 return;
             }
 
@@ -1445,12 +2478,13 @@
                 const result = await response.json();
                 currentTranscription = result.transcription;
                 
-                // Mostrar transcripción
-                const transcriptionPreview = document.getElementById('transcriptionPreview');
-                transcriptionPreview.textContent = `"${currentTranscription}"`;
-                transcriptionPreview.classList.remove('empty');
-                
-                document.getElementById('recordStatus').textContent = '✅ Audio transcrito - enviando automáticamente...';
+                // Mostrar transcripción en el botón flotante
+                const floatingTranscription = document.getElementById('floatingTranscription');
+                const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+                floatingTranscription.textContent = `"${currentTranscription}"`;
+                floatingTranscription.style.display = 'block';
+
+                floatingAudioStatus.textContent = '✅ Transcrito';
                 updateAudioButtonStates();
                 
                 addLog(`✅ Audio transcrito: "${currentTranscription}"`, 'success');
@@ -1463,7 +2497,7 @@
                 
             } catch (error) {
                 addLog(`Error en transcripción: ${error.message}`, 'error');
-                document.getElementById('recordStatus').textContent = '❌ Error en transcripción';
+                document.getElementById('floatingAudioStatus').textContent = '❌ Error audio';
                 currentTranscription = '';
                 updateAudioButtonStates();
             }
@@ -1473,26 +2507,31 @@
         function sendTranscribedTextAutomatically() {
             if (!currentTranscription || !ws || ws.readyState !== WebSocket.OPEN) {
                 addLog('❌ No se puede enviar transcripción - WebSocket no conectado', 'error');
-                document.getElementById('recordStatus').textContent = '❌ Error de conexión - transcripción no enviada';
+                document.getElementById('floatingAudioStatus').textContent = '❌ Sin conexión';
                 return;
             }
 
+            // Mostrar mensaje del usuario inmediatamente en la transcripción
+            hideConversationPlaceholder();
+            addConversationEntry('Usuario', currentTranscription, 'user');
+
             ws.send(JSON.stringify({
                 type: 'task',
-                text: currentTranscription,
-                task_type: 'chat'
+                text: currentTranscription
             }));
 
-            addLog(`📤 Enviando automáticamente al avatar: "${currentTranscription}"`, 'info');
-            document.getElementById('recordStatus').textContent = '📤 Enviado al avatar correctamente';
-            
+            // Log técnico a consola
+            addLog(`📤 Enviando automáticamente: "${currentTranscription}"`, 'info');
+            document.getElementById('floatingAudioStatus').textContent = '📤 Enviado';
+
             // Limpiar transcripción después de enviar
             setTimeout(() => {
                 currentTranscription = '';
-                const transcriptionPreview = document.getElementById('transcriptionPreview');
-                transcriptionPreview.textContent = 'El texto transcrito aparecerá aquí...';
-                transcriptionPreview.classList.add('empty');
-                document.getElementById('recordStatus').textContent = 'Mantén presionado para grabar';
+                const floatingTranscription = document.getElementById('floatingTranscription');
+                const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+                floatingTranscription.style.display = 'none';
+                floatingTranscription.textContent = 'Transcripción aparecerá aquí...';
+                floatingAudioStatus.textContent = 'Presiona y habla';
                 updateAudioButtonStates();
             }, 2000); // Más tiempo para ver el feedback
         }
@@ -1504,9 +2543,12 @@
 
         // Inicialización
         window.addEventListener('load', async () => {
-            addLog('Cliente HeyGen iniciado', 'success');
+            addLog('Cliente AlicIA iniciado', 'success');
             updateUI('idle');
-            
+
+            // Deshabilitar botones de preguntas hasta que se valide email
+            updateQuestionButtonsState();
+
             // Solicitar acceso al micrófono para funcionalidad de audio
             const audioAvailable = await initializeAudio();
             if (audioAvailable) {
@@ -1515,6 +2557,12 @@
                 addLog('⚠️ Micrófono no disponible - solo modo texto', 'info');
             }
         });
+
+        // Función para colapsar/expandir conversación
+        function toggleConversationCollapse() {
+            const section = document.getElementById('conversationSection');
+            section.classList.toggle('conversation-collapsed');
+        }
 
         // Limpiar al cerrar la ventana
         window.addEventListener('beforeunload', () => {

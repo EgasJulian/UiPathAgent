@@ -6,3 +6,5 @@ pydantic
 python-multipart
 aiofiles
 deepgram-sdk
+openai
+python-dotenv
