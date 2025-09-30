@@ -299,6 +299,94 @@
             }
         }
 
+        /* Estilos para módulo de facturas */
+        .invoice-upload-area {
+            border: 2px dashed rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 20px;
+        }
+
+        .invoice-upload-area:hover {
+            border-color: rgba(0, 212, 255, 0.6);
+            background: rgba(0, 212, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .invoice-upload-area.dragover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .upload-content svg {
+            color: rgba(0, 212, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .invoice-preview {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .extracted-data-area {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .extracted-data-area h4 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .data-value {
+            color: #00d4ff;
+            text-align: right;
+        }
+
+        .processing-indicator {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 212, 255, 0.1);
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+
+        .invoice-validate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .status-info {
             display: grid;
             gap: 10px;
@@ -1323,6 +1411,59 @@
                     </button>
                 </div>
 
+                <!-- CUARTA SECCIÓN: Validación de Facturas -->
+                <div class="task-section">
+                    <h3>📄 Validación de Facturas</h3>
+                    <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
+                        Sube una imagen de tu factura de NovaIA para validar que los costos coincidan con el contrato.
+                    </p>
+
+                    <!-- Upload Area -->
+                    <div id="invoiceUploadArea" class="invoice-upload-area" onclick="document.getElementById('invoiceFileInput').click()">
+                        <div class="upload-content">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7,10 12,15 17,10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            <p><strong>Haz clic para subir</strong> o arrastra tu factura aquí</p>
+                            <p style="font-size: 12px; color: #999;">JPG, PNG, PDF (máx. 10MB)</p>
+                        </div>
+                    </div>
+                    <input type="file" id="invoiceFileInput" accept="image/*,application/pdf,.pdf" style="display: none;" onchange="handleInvoiceUpload(event)">
+
+                    <!-- Preview Area -->
+                    <div id="invoicePreview" class="invoice-preview" style="display: none;">
+                        <div id="imagePreview" style="display: none;">
+                            <img id="invoiceImage" alt="Vista previa de factura" style="max-width: 100%; max-height: 300px; border-radius: 8px;">
+                        </div>
+                        <div id="pdfPreview" style="display: none; text-align: center; padding: 20px; border: 2px dashed #ddd; border-radius: 8px; background-color: #f9f9f9;">
+                            <div style="font-size: 48px; color: #666; margin-bottom: 10px;">📄</div>
+                            <p id="pdfFileName" style="font-weight: bold; margin: 5px 0;"></p>
+                            <p id="pdfFileSize" style="color: #666; font-size: 12px; margin: 0;"></p>
+                        </div>
+                        <button onclick="clearInvoice()" style="margin-top: 10px; padding: 5px 10px; font-size: 12px;">Cambiar archivo</button>
+                    </div>
+
+                    <!-- Extracted Data Area -->
+                    <div id="extractedDataArea" class="extracted-data-area" style="display: none;">
+                        <h4>📊 Datos Extraídos</h4>
+                        <div id="extractedDataContent"></div>
+                        <button id="validateInvoiceBtn" class="btn-primary invoice-validate-btn" onclick="validateInvoiceData()" style="margin-top: 15px; width: 100%;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 6L9 17l-5-5"></path>
+                            </svg>
+                            Validar Factura vs Contrato
+                        </button>
+                    </div>
+
+                    <!-- Processing Indicator -->
+                    <div id="invoiceProcessing" class="processing-indicator" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Extrayendo datos de la factura...</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -1534,6 +1675,9 @@
                     }
                 }
             });
+
+            // También actualizar el botón de validación de facturas
+            updateInvoiceValidationButton();
         }
 
         // Funciones para manejar el estado del botón "Crear Sesión"
@@ -2541,6 +2685,258 @@
             sendTranscribedTextAutomatically();
         }
 
+        // Variables globales para facturas
+        let currentInvoiceData = null;
+
+        // Manejar drag and drop para facturas
+        function setupInvoiceDragAndDrop() {
+            const uploadArea = document.getElementById('invoiceUploadArea');
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        processInvoiceFile(file);
+                    } else {
+                        addLog('⚠️ Solo se permiten archivos de imagen (JPG, PNG)', 'warning');
+                    }
+                }
+            });
+        }
+
+        // Manejar selección de archivo de factura
+        function handleInvoiceUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processInvoiceFile(file);
+            }
+        }
+
+        // Procesar archivo de factura
+        async function processInvoiceFile(file) {
+            // Validar tamaño (10MB máx)
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                addLog('⚠️ El archivo es muy grande. Máximo 10MB permitido.', 'warning');
+                return;
+            }
+
+            try {
+                // Mostrar preview
+                showInvoicePreview(file);
+
+                // Mostrar indicador de procesamiento
+                document.getElementById('invoiceProcessing').style.display = 'block';
+                document.getElementById('extractedDataArea').style.display = 'none';
+
+                // Preparar FormData
+                const formData = new FormData();
+                formData.append('invoice_file', file);
+
+                // Extraer datos con API
+                addLog('📄 Extrayendo datos de la factura...', 'info');
+                const response = await fetch('/api/invoice/extract', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Error del servidor');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    currentInvoiceData = result.extracted_data;
+                    displayExtractedData(result.extracted_data);
+                    addLog('✅ Datos extraídos exitosamente de la factura', 'success');
+                } else {
+                    throw new Error(result.message || 'Error extrayendo datos');
+                }
+
+            } catch (error) {
+                addLog(`❌ Error procesando factura: ${error.message}`, 'error');
+                console.error('Error processing invoice:', error);
+            } finally {
+                document.getElementById('invoiceProcessing').style.display = 'none';
+            }
+        }
+
+        // Mostrar preview de la imagen
+        function showInvoicePreview(file) {
+            const previewArea = document.getElementById('invoicePreview');
+            const imagePreview = document.getElementById('imagePreview');
+            const pdfPreview = document.getElementById('pdfPreview');
+
+            // Mostrar área de preview
+            previewArea.style.display = 'block';
+            document.getElementById('invoiceUploadArea').style.display = 'none';
+
+            if (file.type === 'application/pdf') {
+                // Mostrar vista previa de PDF
+                imagePreview.style.display = 'none';
+                pdfPreview.style.display = 'block';
+
+                document.getElementById('pdfFileName').textContent = file.name;
+                document.getElementById('pdfFileSize').textContent = formatFileSize(file.size);
+            } else {
+                // Mostrar vista previa de imagen
+                pdfPreview.style.display = 'none';
+                imagePreview.style.display = 'block';
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('invoiceImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Función auxiliar para formatear tamaño de archivo
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Mostrar datos extraídos
+        function displayExtractedData(data) {
+            const contentArea = document.getElementById('extractedDataContent');
+            let html = '';
+
+            // Datos básicos
+            html += `<div class="data-item"><span class="data-label">Empresa:</span><span class="data-value">${data.empresa_emisora || 'N/A'}</span></div>`;
+            html += `<div class="data-item"><span class="data-label">Número:</span><span class="data-value">${data.numero_factura || 'N/A'}</span></div>`;
+            html += `<div class="data-item"><span class="data-label">Fecha:</span><span class="data-value">${data.fecha_emision || 'N/A'}</span></div>`;
+
+            // Total
+            if (data.total_factura) {
+                html += `<div class="data-item"><span class="data-label"><strong>Total:</strong></span><span class="data-value"><strong>$${Number(data.total_factura).toLocaleString()}</strong></span></div>`;
+            }
+
+            // Conceptos
+            if (data.conceptos && data.conceptos.length > 0) {
+                html += '<br><strong>Conceptos facturados:</strong>';
+                data.conceptos.forEach(concepto => {
+                    html += `<div class="data-item">
+                        <span class="data-label">${concepto.descripcion}</span>
+                        <span class="data-value">$${Number(concepto.total_concepto || 0).toLocaleString()}</span>
+                    </div>`;
+                });
+            }
+
+            // Observaciones
+            if (data.observaciones) {
+                html += `<br><div style="padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; margin-top: 10px;">
+                    <strong>⚠️ Observaciones:</strong><br>${data.observaciones}
+                </div>`;
+            }
+
+            contentArea.innerHTML = html;
+
+            // Mostrar área de datos extraídos
+            document.getElementById('extractedDataArea').style.display = 'block';
+
+            // Habilitar/deshabilitar botón de validación según email
+            updateInvoiceValidationButton();
+        }
+
+        // Actualizar estado del botón de validación de facturas
+        function updateInvoiceValidationButton() {
+            const validateBtn = document.getElementById('validateInvoiceBtn');
+            if (validateBtn) {
+                if (isEmailValidated && validatedEmail && currentInvoiceData) {
+                    validateBtn.disabled = false;
+                    validateBtn.style.opacity = '1';
+                    validateBtn.title = 'Email validado - Listo para validar factura';
+                } else {
+                    validateBtn.disabled = true;
+                    validateBtn.style.opacity = '0.5';
+                    validateBtn.title = 'Debes validar tu email primero';
+                }
+            }
+        }
+
+        // Validar factura usando el flujo existente
+        async function validateInvoiceData() {
+            if (!isEmailValidated || !validatedEmail) {
+                addLog('⚠️ Debes validar tu email antes de validar la factura', 'warning');
+                return;
+            }
+
+            if (!currentInvoiceData) {
+                addLog('⚠️ No hay datos de factura para validar', 'warning');
+                return;
+            }
+
+            try {
+                // Usar el WebSocket existente para enviar la validación
+                if (!ws || ws.readyState !== WebSocket.OPEN) {
+                    addLog('WebSocket no conectado', 'error');
+                    return;
+                }
+
+                // Convertir datos a JSON string para InCaso
+                const invoiceJsonString = JSON.stringify(currentInvoiceData, null, 2);
+
+                addLog('📋 Enviando factura para validación contractual...', 'info');
+
+                // Usar el mismo flujo que los botones predefinidos
+                ws.send(JSON.stringify({
+                    type: 'task',
+                    text: 'Validación de factura vs contrato',
+                    question_case: invoiceJsonString  // Esto irá a InCaso en UiPath
+                }));
+
+                // Deshabilitar botón temporalmente
+                const validateBtn = document.getElementById('validateInvoiceBtn');
+                validateBtn.disabled = true;
+                validateBtn.innerHTML = '🔄 Validando...';
+
+                // Restaurar botón después de 3 segundos
+                setTimeout(() => {
+                    updateInvoiceValidationButton();
+                    validateBtn.innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                        Validar Factura vs Contrato
+                    `;
+                }, 3000);
+
+            } catch (error) {
+                addLog(`❌ Error enviando factura: ${error.message}`, 'error');
+                console.error('Error sending invoice:', error);
+            }
+        }
+
+        // Limpiar factura y empezar de nuevo
+        function clearInvoice() {
+            document.getElementById('invoiceUploadArea').style.display = 'block';
+            document.getElementById('invoicePreview').style.display = 'none';
+            document.getElementById('extractedDataArea').style.display = 'none';
+            document.getElementById('invoiceProcessing').style.display = 'none';
+            document.getElementById('invoiceFileInput').value = '';
+            currentInvoiceData = null;
+        }
+
         // Inicialización
         window.addEventListener('load', async () => {
             addLog('Cliente AlicIA iniciado', 'success');
@@ -2548,6 +2944,10 @@
 
             // Deshabilitar botones de preguntas hasta que se valide email
             updateQuestionButtonsState();
+
+            // Inicializar funcionalidad de facturas
+            setupInvoiceDragAndDrop();
+            updateInvoiceValidationButton();
 
             // Solicitar acceso al micrófono para funcionalidad de audio
             const audioAvailable = await initializeAudio();

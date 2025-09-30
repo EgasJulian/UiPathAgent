@@ -1,64 +1,102 @@
-# 🎬 Avatar AI - HeyGen Streaming Client
+# 🏛️ NovaIA Contract Validator - Sistema de Validación Contractual
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.68+-green.svg)
-![WebRTC](https://img.shields.io/badge/WebRTC-Enabled-orange.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![UiPath](https://img.shields.io/badge/UiPath-Integration-orange.svg)
+![OpenAI](https://img.shields.io/badge/OpenAI-Vision%20API-green.svg)
 
-**Avatar AI** es una aplicación de streaming de avatares que integra la API de HeyGen para crear y controlar avatares de IA en tiempo real a través de WebRTC. El sistema consiste en un backend FastAPI que gestiona las sesiones de HeyGen y sirve un cliente web para la interacción en tiempo real con avatares.
+**NovaIA Contract Validator** es un sistema inteligente de validación contractual que utiliza AlicIA (avatar IA de Indra) para gestionar consultas de facturación y validar automáticamente facturas de NovaIA contra contratos establecidos. El sistema integra HeyGen para el avatar, OpenAI Vision para OCR de facturas, y UiPath para análisis contractual automatizado.
+
+## 🎯 Propósito del Proyecto
+
+Este sistema fue creado específicamente para **identificar diferencias entre contratos pactados con NovaIA y las facturas emitidas**. Permite a los usuarios:
+
+- **Consultar discrepancias** mediante preguntas predefinidas
+- **Validar facturas** automáticamente usando OCR inteligente
+- **Recibir análisis contractual** detallado vía email
+- **Interactuar naturalmente** con AlicIA, el avatar de Indra
 
 ## ✨ Características principales
 
-- 🤖 **Avatares IA en tiempo real** - Streaming de avatares usando HeyGen API
-- 🎥 **Video streaming WebRTC** - Conexión directa de baja latencia
-- 🎯 **Chroma key avanzado** - Procesamiento de fondo en tiempo real con controles personalizables
-- 🔊 **Audio sincronizado** - Síntesis de voz integrada con avatares
-- 🌐 **Interfaz web moderna** - Cliente web responsive con controles intuitivos
-- ⚡ **FastAPI backend** - API REST y WebSocket para gestión de sesiones
-- 🛠️ **Altamente configurable** - Personalización de avatares, voces y calidad de video
+### 🤖 Avatar AlicIA Inteligente
+- **Avatar profesional de Indra** con conocimiento especializado en contratos
+- **Respuestas predefinidas** para consultas de facturación
+- **Interfaz natural** mediante HeyGen + WebRTC
+
+### 💰 Módulo de Consultas de Facturación
+- **Preguntas predefinidas** sobre discrepancias contractuales
+- **Validación de email obligatoria** antes de usar funcionalidades
+- **Respuesta inmediata** + proceso UiPath en segundo plano
+- **Email automático** con análisis contractual detallado
+
+### 📄 Módulo de Validación de Facturas
+- **OCR inteligente** con OpenAI Vision API
+- **Extracción automática** de conceptos, tarifas y totales
+- **Drag & drop** para subir facturas (JPG, PNG)
+- **Validación contractual** automática vía UiPath
+- **Detección de conceptos no contractuales**
+
+### 🔧 Integración UiPath
+- **Agente unificado** para consultas y facturas
+- **Parámetros dinámicos**: InCorreo (email) + InCaso (datos)
+- **Proceso automatizado** de análisis y notificación
+- **Orquestación cloud** con tokens PAT
 
 ## 🏗️ Arquitectura
 
 ```
-┌─────────────────┐    WebSocket    ┌─────────────────┐    HeyGen API    ┌─────────────────┐
-│   Frontend      │◄────────────────┤   Backend       │◄─────────────────┤   HeyGen        │
-│   (avatar.html) │                 │   (FastAPI)     │                  │   Services      │
-│                 │                 │                 │                  │                 │
-│ ┌─────────────┐ │                 │ ┌─────────────┐ │                  │ ┌─────────────┐ │
-│ │ Video Stream│ │   WebRTC        │ │ Session Mgr │ │                  │ │ LiveKit     │ │
-│ │ + Chroma Key│ │◄────────────────┼─┤ + Auth      │ │                  │ │ + Avatar AI │ │
-│ │             │ │                 │ │             │ │                  │ │             │ │
-│ └─────────────┘ │                 │ └─────────────┘ │                  │ └─────────────┘ │
-└─────────────────┘                 └─────────────────┘                  └─────────────────┘
+┌─────────────────┐   Email Input    ┌─────────────────┐    UiPath API    ┌─────────────────┐
+│   Frontend      │◄─────────────────│   Backend       │◄─────────────────│   UiPath        │
+│   (avatar.html) │  Consultation    │   (FastAPI)     │   Validation     │   Orchestrator  │
+│                 │  + Invoice OCR   │                 │   Process        │                 │
+│ ┌─────────────┐ │                  │ ┌─────────────┐ │                  │ ┌─────────────┐ │
+│ │ AlicIA      │ │   WebSocket      │ │ Session +   │ │                  │ │ Contract    │ │
+│ │ Avatar +    │ │◄─────────────────┼─┤ UiPath Mgr  │ │                  │ │ Validation  │ │
+│ │ UI Controls │ │                  │ │             │ │                  │ │ + Email     │ │
+│ └─────────────┘ │                  │ └─────────────┘ │                  │ └─────────────┘ │
+└─────────────────┘                  └─────────────────┘                  └─────────────────┘
+          ↑                                   ↑
+    ┌─────────────┐                  ┌─────────────┐
+    │ HeyGen      │                  │ OpenAI      │
+    │ Streaming   │                  │ Vision API  │
+    │ Avatar API  │                  │ (OCR)       │
+    └─────────────┘                  └─────────────┘
 ```
 
 ### Componentes principales
 
-**Backend (main.py)**
-- **FastAPI application** - Servidor REST API y WebSocket
-- **HeyGenSessionManager** - Gestión de sesiones y autenticación con HeyGen
-- **Session storage** - Almacenamiento en memoria de sesiones activas
-- **CORS middleware** - Configuración para desarrollo
-
 **Frontend (avatar.html)**
-- **Cliente WebRTC** - Conexión directa a servidores LiveKit de HeyGen
-- **Procesamiento de video** - Chroma key en tiempo real con Canvas API
-- **UI responsiva** - Controles de sesión y configuración de video
-- **Sistema de logs** - Monitoreo en tiempo real del estado
+- **Validación de Email** - Campo obligatorio con verificación de formato
+- **Consultas Predefinidas** - Botones para casos comunes de facturación
+- **Upload de Facturas** - Drag & drop con preview y extracción OCR
+- **Avatar AlicIA** - Streaming en tiempo real con chroma key
+
+**Backend (main.py)**
+- **FastAPI + WebSocket** - API REST y comunicación en tiempo real
+- **Email Validation System** - Validación y asociación por sesión
+- **OpenAI Vision Integration** - Extracción OCR de datos de facturas
+- **UiPath Manager** - Orquestación de workflows de validación
+
+**UiPath Integration (uipath_integration.py)**
+- **Contract Validation Agent** - Análisis automático de discrepancias
+- **Dynamic Parameters** - Email + datos específicos por consulta/factura
+- **Email Notifications** - Envío automático de resultados de análisis
 
 ## 🚀 Instalación y configuración
 
 ### Requisitos previos
 
 - Python 3.8+
+- Cuenta HeyGen con API key
+- Cuenta OpenAI con acceso a Vision API
+- Acceso a UiPath Orchestrator Cloud
 - Navegador web moderno con soporte WebRTC
-- Cuenta de HeyGen con API key activa
 
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/EgasJulian/Avatar-AI.git
-cd Avatar-AI/V2
+git clone [url-del-repositorio]
+cd V-UiPath
 ```
 
 ### 2. Crear entorno virtual
@@ -74,20 +112,34 @@ source .venv/bin/activate  # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Configurar API de HeyGen
+### 4. Configurar variables de entorno
 
-Edita el archivo `main.py` y actualiza la configuración:
+Crea un archivo `.env` con las siguientes configuraciones:
 
-```python
-# Línea 29: Reemplaza con tu API key de HeyGen
-HEYGEN_API_KEY = "tu_api_key_aqui"
+```env
+# HeyGen Configuration
+HEYGEN_API_KEY=tu_heygen_api_key
+HEYGEN_BASE_URL=https://api.heygen.com/v1
 
-# Líneas 38-41: Configura avatar y voz
-class SessionConfig(BaseModel):
-    avatar_id: str = "Marianne_ProfessionalLook2_public"
-    voice_id: str = "253dc1d148f2410a860bc28996b30621"
-    quality: str = "medium"
-    video_encoding: str = "H264"
+# Avatar Configuration
+AVATAR_ID=Marianne_ProfessionalLook2_public
+VOICE_ID=b03cee81247e42d391cecc6b60f0f042
+SESSION_QUALITY=medium
+
+# OpenAI Configuration
+OPENAI_API_KEY=tu_openai_api_key
+OPENAI_SYSTEM_MESSAGE="Eres AlicIA, asistente de Indra..."
+
+# UiPath Configuration
+UIPATH_ORGANIZATION=minsacsvndlb
+UIPATH_TENANT=CO_DEMO
+UIPATH_PAT=tu_uipath_personal_access_token
+UIPATH_PROCESS_NAME=RPA.Workflow
+
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
+ALLOWED_ORIGINS=*
 ```
 
 ### 5. Iniciar la aplicación
@@ -102,156 +154,177 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ### 6. Acceder al cliente
 
-Abre `avatar.html` en tu navegador o usa un servidor web local:
-
-```bash
-# Con Python
-python -m http.server 3000
-
-# Luego visita: http://localhost:3000/avatar.html
+Abre tu navegador y ve a:
+```
+http://localhost:8000
 ```
 
 ## 🎮 Guía de uso
 
-### Iniciar una sesión
+### 1. Validación de Email (Obligatorio)
 
-1. **Crear sesión** - Click en "Crear Sesión" para inicializar el avatar
-2. **Conexión automática** - El sistema se conecta automáticamente via WebSocket y WebRTC
-3. **Video activo** - El avatar aparece con chroma key activado por defecto
+1. **Ingresa tu email** en el campo "Validación de Correo Electrónico"
+2. **Presiona "Validar Email"** - El sistema verificará el formato
+3. **Confirmación** - Los botones se habilitarán con email válido
 
-### Enviar tareas al avatar
+### 2. Consultas de Facturación Predefinidas
 
-1. **Escribir texto** - Ingresa el texto en el área de "Enviar Tarea"
-2. **Enviar** - Click en "Enviar Tarea" o Ctrl+Enter
-3. **Observar** - El avatar pronunciará el texto en tiempo real
+1. **Selecciona una consulta** de los botones disponibles:
+   - "¿Por qué me están cobrando un dashboard interactivo?"
+   - "La tarifa del desarrollador RPA senior es incorrecta"
+   - "¿Qué tarifa se aplica para soporte fuera de horario?"
 
-### Controles de video
+2. **Respuesta inmediata** - AlicIA responderá:
+   *"Estamos analizando el contrato y tu caso de uso, en un momento recibirás en tu correo el análisis completo"*
 
-- **🎬 Video Original** - Muestra el video sin procesamiento
-- **🎯 Chroma Key** - Activa el procesamiento de fondo (modo por defecto)
-- **Slider de tolerancia** - Ajusta la sensibilidad del chroma key
+3. **Proceso automático** - UiPath analizará tu consulta vs contrato
+4. **Email de resultados** - Recibirás análisis detallado en tu correo
 
-### Cerrar sesión
+### 3. Validación de Facturas
 
-- Click en "Cerrar Sesión" para terminar la conexión y limpiar recursos
+1. **Sube tu factura** - Arrastra o haz clic para seleccionar imagen (JPG/PNG)
+2. **Extracción automática** - OpenAI Vision extraerá:
+   - Datos básicos (empresa, número, fecha)
+   - Conceptos facturados con valores
+   - Total de la factura
+   - Observaciones sobre conceptos no contractuales
+
+3. **Revisa los datos** - Verifica que la extracción sea correcta
+4. **Validar factura** - Presiona "Validar Factura vs Contrato"
+5. **Análisis automático** - UiPath comparará factura vs contrato
+6. **Email de resultados** - Recibirás análisis detallado de discrepancias
+
+### 4. Interacción con AlicIA
+
+- **Crear sesión** - Conecta con el avatar de Indra
+- **Conversación natural** - Puedes chatear libremente sobre temas de Indra
+- **Chroma key** - El avatar aparece con fondo transparente
+- **Audio sincronizado** - Escucha las respuestas de AlicIA
 
 ## 📡 API Reference
 
-### REST Endpoints
+### Endpoints de Email
 
-#### Crear sesión
+#### Validar email
 ```http
-POST /api/sessions/create
+POST /api/email/validate
 Content-Type: application/json
 
 {
-  "quality": "medium",
-  "avatar_id": "Marianne_ProfessionalLook2_public",
-  "voice_id": "253dc1d148f2410a860bc28996b30621"
+  "email": "usuario@empresa.com"
 }
+```
+
+#### Asociar email con sesión
+```http
+POST /api/sessions/{session_id}/email
+Content-Type: application/json
+
+{
+  "session_id": "uuid",
+  "email": "usuario@empresa.com"
+}
+```
+
+### Endpoints de Facturas
+
+#### Extraer datos de factura
+```http
+POST /api/invoice/extract
+Content-Type: multipart/form-data
+
+[invoice_file: image/jpeg]
 ```
 
 **Respuesta:**
 ```json
 {
-  "session_id": "uuid4-string",
-  "status": "created",
-  "livekit_url": "wss://...",
-  "livekit_token": "eyJhbG..."
+  "success": true,
+  "extracted_data": {
+    "tipo_documento": "factura",
+    "empresa_emisora": "NovaIA",
+    "numero_factura": "FAC-2024-001",
+    "total_factura": 6100000,
+    "conceptos": [
+      {
+        "descripcion": "Desarrollo RPA Senior",
+        "total_concepto": 3600000
+      }
+    ],
+    "observaciones": "Dashboard no contractual detectado"
+  },
+  "message": "Datos extraídos exitosamente"
 }
 ```
 
-#### Enviar tarea
+### Endpoints UiPath
+
+#### Trigger manual de workflow
 ```http
-POST /api/sessions/{session_id}/task
+POST /api/uipath/trigger
 Content-Type: application/json
 
 {
-  "text": "Hola, este es un mensaje de prueba",
-  "task_type": "repeat"
+  "question": "¿Por qué me cobran dashboard?"
 }
 ```
 
-#### Cerrar sesión
+#### Verificar estado de job
 ```http
-DELETE /api/sessions/{session_id}
+GET /api/uipath/job/{job_id}
 ```
 
 ### WebSocket Events
 
-#### Conexión
+#### Consultas predefinidas
 ```javascript
-ws = new WebSocket('ws://localhost:8000/ws/{session_id}');
-```
-
-#### Eventos enviados por el cliente
-```javascript
-// Enviar tarea
 ws.send(JSON.stringify({
   type: 'task',
-  text: 'Texto para el avatar'
-}));
-
-// Cerrar sesión
-ws.send(JSON.stringify({
-  type: 'close'
+  text: 'Pregunta del usuario',
+  question_case: 'Texto completo del botón'
 }));
 ```
 
-#### Eventos recibidos del servidor
+#### Validación de facturas
 ```javascript
-// Información de sesión
-{
-  "type": "session_info",
-  "data": {
-    "livekit_url": "wss://...",
-    "livekit_token": "eyJ..."
-  }
-}
-
-// Error
-{
-  "type": "error",
-  "message": "Descripción del error"
-}
+ws.send(JSON.stringify({
+  type: 'task',
+  text: 'Validación de factura vs contrato',
+  question_case: JSON.stringify(extracted_invoice_data)
+}));
 ```
 
 ## ⚙️ Configuración avanzada
 
-### Personalización del avatar
+### Personalización de UiPath
 
-Puedes cambiar el avatar editando la clase `SessionConfig` en `main.py`:
+Modifica las variables de entorno para tu tenant:
+
+```env
+UIPATH_ORGANIZATION=tu_organizacion
+UIPATH_TENANT=tu_tenant
+UIPATH_PAT=tu_token_pat
+UIPATH_PROCESS_NAME=tu_proceso_validacion
+```
+
+### Configuración de OpenAI Vision
+
+El sistema usa `gpt-4-vision-preview` con prompt especializado para extraer datos financieros estructurados. Puedes ajustar el prompt en `main.py`:
 
 ```python
-class SessionConfig(BaseModel):
-    avatar_id: str = "tu_avatar_id"      # ID del avatar de HeyGen
-    voice_id: str = "tu_voice_id"        # ID de la voz
-    quality: str = "high"                # low, medium, high
-    video_encoding: str = "H264"         # H264, VP8, VP9
+system_prompt = """
+Eres un experto en análisis de facturas. Extrae TODOS los datos financieros...
+"""
 ```
 
-### Configuración del chroma key
+### Personalización del Avatar
 
-Los parámetros del chroma key se pueden ajustar en `avatar.html`:
+Ajusta las configuraciones en `.env`:
 
-```javascript
-// Línea 583: Tolerancia por defecto
-let tolerance = 30; // 10-100, mayor = más agresivo
-
-// Líneas 1003-1007: Color de fondo de reemplazo
-data[i] = Math.floor(15 + gradientFactor * 25);     // R
-data[i + 1] = Math.floor(20 + gradientFactor * 35); // G  
-data[i + 2] = Math.floor(45 + gradientFactor * 60); // B
-```
-
-### Variables de entorno
-
-Para producción, se recomienda usar variables de entorno:
-
-```bash
-export HEYGEN_API_KEY="tu_api_key"
-export PORT="8000"
-export CORS_ORIGINS="https://tu-dominio.com"
+```env
+AVATAR_ID=tu_avatar_preferido
+VOICE_ID=tu_voz_preferida
+SESSION_QUALITY=high  # low, medium, high
 ```
 
 ## 🛠️ Desarrollo
@@ -259,13 +332,14 @@ export CORS_ORIGINS="https://tu-dominio.com"
 ### Estructura del proyecto
 
 ```
-Avatar-AI/V2/
-├── main.py              # Backend FastAPI
-├── avatar.html          # Cliente web completo
-├── requirements.txt     # Dependencias Python
-├── CLAUDE.md           # Documentación para Claude
-├── README.md           # Este archivo
-└── __pycache__/        # Cache de Python
+V-UiPath/
+├── main.py                 # Backend FastAPI + OpenAI Vision
+├── uipath_integration.py   # Gestión de workflows UiPath
+├── avatar.html             # Frontend completo con módulos
+├── requirements.txt        # Dependencias Python
+├── .env                    # Variables de entorno
+├── CLAUDE.md              # Documentación para Claude
+└── README.md              # Este archivo
 ```
 
 ### Ejecutar en modo desarrollo
@@ -274,87 +348,81 @@ Avatar-AI/V2/
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Logs y debugging
+### Testing del sistema
 
-El backend genera logs detallados:
-
-```python
-# Configurar nivel de logging
-logging.basicConfig(level=logging.DEBUG)
-```
-
-El frontend incluye sistema de logs en tiempo real visible en la interfaz.
-
-### Testing
-
-Para probar la aplicación:
-
-1. Verificar conectividad con HeyGen API
-2. Probar creación de sesiones
-3. Verificar streaming WebRTC
-4. Testear funcionalidad de chroma key
+1. **Validación de email** - Probar formato correcto/incorrecto
+2. **Consultas predefinidas** - Verificar activación de UiPath
+3. **OCR de facturas** - Subir imágenes de prueba
+4. **Integración UiPath** - Verificar recepción de parámetros
+5. **Emails automáticos** - Confirmar envío de análisis
 
 ## 🐛 Troubleshooting
 
 ### Problemas comunes
 
-**Error: "Failed to create session"**
+**Error: "Debes validar tu email antes de usar esta funcionalidad"**
+- Verifica que hayas ingresado un email con formato válido
+- Confirma que veas el checkmark verde de validación
+
+**OCR no extrae datos correctamente**
+- Usa imágenes de alta calidad (mín. 300 DPI)
+- Asegúrate de que el texto sea legible
+- Formatos soportados: JPG, PNG (máx. 10MB)
+
+**UiPath no se activa**
+- Verifica tu PAT token en variables de entorno
+- Confirma que el proceso esté publicado en Orchestrator
+- Revisa logs del backend para errores de API
+
+**Avatar no se conecta**
 - Verifica tu API key de HeyGen
-- Confirma que tu cuenta tiene créditos disponibles
-- Revisa los logs del backend para más detalles
-
-**Video no se muestra**
-- Verifica que WebRTC esté habilitado en tu navegador
-- Comprueba la conexión a internet
-- Revisa la consola del navegador para errores
-
-**Chroma key no funciona correctamente**
-- Ajusta el slider de tolerancia
-- Verifica que el navegador soporte Canvas API
-- El avatar debe tener un fondo verde para mejor resultado
-
-**Audio no se reproduce**
-- Haz click en el video para activar audio (requerimiento del navegador)
-- Verifica configuración de audio del navegador
-- Comprueba que el avatar tenga configuración de voz
+- Confirma conexión a internet estable
+- Revisa créditos disponibles en tu cuenta HeyGen
 
 ### Logs útiles
 
-**Backend (FastAPI):**
+**Backend:**
 ```bash
-INFO:     Uvicorn running on http://0.0.0.0:8000
-INFO:     Session created: uuid-session-id
-INFO:     WebSocket connected: uuid-session-id
+INFO: [EMAIL VALIDATION] Email válido almacenado: user@example.com
+INFO: [UIPATH] Using validated email for UiPath: user@example.com
+INFO: [INVOICE] Datos extraídos exitosamente de factura.jpg
+INFO: [PREDEFINED] Using predefined response for question case
 ```
 
-**Frontend (Consola del navegador):**
+**Frontend (Consola):**
 ```javascript
-[timestamp] ✅ Sesión creada con éxito: uuid
-[timestamp] ✅ WebSocket conectado.
-[timestamp] ✅ Conectado a LiveKit
+✅ Email válido: usuario@empresa.com
+📄 Extrayendo datos de la factura...
+✅ Datos extraídos exitosamente de la factura
+📋 Enviando factura para validación contractual...
 ```
 
 ## 📦 Dependencias
 
-### Backend
-- `fastapi` - Framework web moderno
-- `uvicorn[standard]` - Servidor ASGI
-- `websockets` - Soporte WebSocket
-- `requests` - Cliente HTTP
-- `pydantic` - Validación de datos
-- `python-multipart` - Manejo de formularios
+### Backend Python
+- `fastapi` - Framework web moderno y rápido
+- `uvicorn[standard]` - Servidor ASGI de alta performance
+- `websockets` - Comunicación tiempo real
+- `requests` - Cliente HTTP para APIs externas
+- `pydantic` - Validación y serialización de datos
+- `python-multipart` - Manejo de uploads de archivos
 - `aiofiles` - Operaciones de archivos asíncronas
+- `deepgram-sdk` - Speech-to-text (funcionalidad adicional)
+- `openai` - OpenAI Vision API para OCR
+- `python-dotenv` - Gestión de variables de entorno
+- `Pillow` - Procesamiento de imágenes
 
-### Frontend
-- `LiveKit Client SDK` - Cliente WebRTC (cargado via CDN)
-- Canvas API (nativo del navegador)
-- WebSocket API (nativo del navegador)
+### APIs Externas
+- **HeyGen Streaming API** - Avatar IA y video streaming
+- **OpenAI Vision API** - OCR inteligente de facturas
+- **UiPath Orchestrator** - Automatización y validación contractual
+- **LiveKit** - Infraestructura WebRTC (via HeyGen)
 
 ## 🤝 Contribución
 
 1. Fork del repositorio
 2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+3. Commit cambios (`git commit -am 'Agregar validación de contratos mejorada'`)
 4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 5. Crear Pull Request
 
@@ -364,24 +432,47 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 👥 Créditos
 
-- **HeyGen** - Plataforma de avatares IA y API
-- **LiveKit** - Infraestructura WebRTC
-- **FastAPI** - Framework web Python
+- **Indra Colombia** - Desarrollo y arquitectura del sistema
+- **AlicIA** - Avatar especializado en contratos y servicios Indra
+- **HeyGen** - Plataforma de avatares IA
+- **OpenAI** - Vision API para extracción de datos
+- **UiPath** - Plataforma de automatización RPA
 
 ## 📞 Soporte
 
-Para soporte y preguntas:
+Para soporte técnico y consultas sobre el sistema:
 
-- 📧 Email: [tu-email@dominio.com]
-- 🐛 Issues: [GitHub Issues](https://github.com/EgasJulian/Avatar-AI/issues)
-- 📖 Documentación: [Wiki del proyecto](https://github.com/EgasJulian/Avatar-AI/wiki)
+- 🏢 **Indra Colombia** - Equipo de Desarrollo
+- 📧 **Email técnico**: [soporte@indracompany.com]
+- 🤖 **AlicIA**: Usa el sistema para consultas sobre funcionalidades
 
 ---
 
-**⚠️ Nota importante:** Este proyecto requiere una cuenta activa de HeyGen y su correspondiente API key. Los costos de uso de la API de HeyGen corren por cuenta del usuario.
+## ⚠️ Notas importantes
+
+- **Requiere APIs activas**: HeyGen, OpenAI Vision y UiPath Orchestrator
+- **Costos por uso**: Las APIs externas tienen tarifas según consumo
+- **Datos sensibles**: El sistema maneja información contractual confidencial
+- **Validación obligatoria**: Email requerido para todas las funcionalidades
+
+---
+
+## 🎯 Casos de uso principales
+
+### Para Usuarios de Negocio
+- ✅ Validar facturas recibidas de NovaIA automáticamente
+- ✅ Consultar discrepancias contractuales específicas
+- ✅ Recibir análisis detallados vía email
+- ✅ Detectar cobros no acordados en contratos
+
+### Para Equipos de Contratos
+- ✅ Automatizar revisión de facturas vs contratos
+- ✅ Identificar patrones de discrepancias
+- ✅ Generar reportes automáticos de diferencias
+- ✅ Acelerar procesos de validación contractual
 
 ---
 
 <p align="center">
-  Hecho con ❤️ para democratizar el acceso a avatares IA
+  <strong>🏛️ Desarrollado por Indra Colombia para optimizar la validación contractual con NovaIA</strong>
 </p>

@@ -8,3 +8,6 @@ aiofiles
 deepgram-sdk
 openai
 python-dotenv
+Pillow
+pdfplumber
+pymupdf

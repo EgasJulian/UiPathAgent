@@ -15,6 +15,10 @@ import tempfile
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import base64
+from PIL import Image
+import io
+import json
 from uipath_integration import get_uipath_manager
 
 # Cargar variables de entorno
@@ -150,6 +154,12 @@ class SessionEmailRequest(BaseModel):
     session_id: str
     email: str
 
+class InvoiceExtractionResponse(BaseModel):
+    success: bool
+    extracted_data: dict
+    raw_text: str = ""
+    message: str
+
 # Clase para manejar sesiones de HeyGen
 class HeyGenSessionManager:
     def __init__(self):
@@ -255,6 +265,276 @@ class HeyGenSessionManager:
             raise HTTPException(status_code=500, detail=f"Error closing session: {str(e)}")
 
 session_manager = HeyGenSessionManager()
+
+# Función para procesar facturas con OpenAI
+async def process_invoice_with_vision(file_data: bytes, content_type: str) -> dict:
+    """
+    Procesa una factura (PDF o imagen) usando OpenAI para extraer datos financieros estructurados.
+    """
+    try:
+        extracted_text = ""
+
+        if content_type == "application/pdf":
+            # Procesar PDF para extraer texto
+            extracted_text = await extract_text_from_pdf(file_data)
+            logger.info(f"[INVOICE] Texto extraído del PDF: {len(extracted_text)} caracteres")
+
+            # Usar OpenAI para procesar el texto extraído
+            client = OpenAI(api_key=current_openai_key)
+
+            # Prompt especializado para analizar texto de facturas
+            system_prompt = f"""
+            Analiza el siguiente texto extraído de una factura PDF y extrae los datos financieros estructurados.
+
+            TEXTO DE LA FACTURA:
+            {extracted_text}
+
+            Devuelve SOLO un JSON válido con esta estructura exacta:
+            {{
+              "tipo_documento": "factura",
+              "empresa_emisora": "nombre de la empresa",
+              "numero_factura": "número si está visible",
+              "fecha_emision": "fecha de emisión",
+              "fecha_vencimiento": "fecha de vencimiento si está visible",
+              "periodo_facturado": "período que cubre la factura",
+              "conceptos": [
+                {{
+                  "item": "número de ítem",
+                  "descripcion": "descripción del servicio/concepto",
+                  "cantidad": numero_cantidad,
+                  "valor_unitario": valor_numérico,
+                  "total_concepto": valor_numérico
+                }}
+              ],
+              "subtotal": valor_numérico,
+              "descuento": valor_numérico,
+              "tasa_impuestos": porcentaje_numérico,
+              "impuestos": valor_numérico,
+              "total_factura": valor_numérico,
+              "observaciones": "cualquier nota importante o servicios no contractuales detectados"
+            }}
+
+            IMPORTANTE:
+            - Extrae TODOS los conceptos/ítems facturados de la tabla
+            - Identifica servicios que puedan no estar en contrato original
+            - Valores numéricos sin símbolos de moneda, puntos ni comas
+            - Si no encuentras un campo, usa null o ""
+            - Busca especialmente ítems como "Configuración inicial", "Implementación", "Desarrollador"
+            """
+
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "user", "content": system_prompt}
+                ],
+                max_tokens=1500,
+                temperature=0.1
+            )
+
+            raw_response = response.choices[0].message.content.strip()
+
+        else:
+            # Procesar imagen como antes
+            image = Image.open(io.BytesIO(file_data))
+
+            # Redimensionar si es muy grande (opcional)
+            max_size = (2048, 2048)
+            if image.size[0] > max_size[0] or image.size[1] > max_size[1]:
+                image.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+            # Convertir a RGB si es necesario
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+
+            # Convertir a base64
+            buffered = io.BytesIO()
+            image.save(buffered, format="JPEG")
+            base64_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+            # Crear cliente OpenAI
+            client = OpenAI(api_key=current_openai_key)
+
+            # Prompt especializado para extraer datos de facturas con Vision
+            system_prompt = """
+            Eres un experto en análisis de facturas. Extrae TODOS los datos financieros de esta factura.
+
+            Devuelve SOLO un JSON válido con esta estructura exacta:
+            {
+              "tipo_documento": "factura",
+              "empresa_emisora": "nombre de la empresa",
+              "numero_factura": "número si está visible",
+              "fecha_emision": "fecha de emisión",
+              "fecha_vencimiento": "fecha de vencimiento si está visible",
+              "periodo_facturado": "período que cubre la factura",
+              "conceptos": [
+                {
+                  "item": "número de ítem",
+                  "descripcion": "descripción del servicio/concepto",
+                  "cantidad": numero_cantidad,
+                  "valor_unitario": valor_numérico,
+                  "total_concepto": valor_numérico
+                }
+              ],
+              "subtotal": valor_numérico,
+              "descuento": valor_numérico,
+              "tasa_impuestos": porcentaje_numérico,
+              "impuestos": valor_numérico,
+              "total_factura": valor_numérico,
+              "observaciones": "cualquier nota importante o servicios no contractuales detectados"
+            }
+
+            IMPORTANTE:
+            - Extrae TODOS los conceptos facturados
+            - Identifica servicios que puedan no estar en contrato original
+            - Valores numéricos sin símbolos de moneda, puntos ni comas, solo números
+            - Si no encuentras un campo, usa null o ""
+            """
+
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": system_prompt},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{base64_image}",
+                                    "detail": "high"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                max_tokens=1500
+            )
+
+            raw_response = response.choices[0].message.content.strip()
+
+        # Parsear JSON de la respuesta (común para PDF e imagen)
+        try:
+            # Limpiar la respuesta si tiene markdown
+            if raw_response.startswith('```json'):
+                raw_response = raw_response.replace('```json\n', '').replace('\n```', '')
+            elif raw_response.startswith('```'):
+                raw_response = raw_response.replace('```\n', '').replace('\n```', '')
+
+            extracted_data = json.loads(raw_response)
+
+            # Validar estructura básica
+            if not isinstance(extracted_data, dict):
+                raise ValueError("Respuesta no es un objeto JSON válido")
+
+            # Agregar el texto extraído en caso de PDF para referencia
+            if content_type == "application/pdf":
+                extracted_data["raw_extracted_text"] = extracted_text[:500] + "..." if len(extracted_text) > 500 else extracted_text
+
+            return extracted_data
+
+        except json.JSONDecodeError as e:
+            logger.error(f"[INVOICE] Error parsing JSON response: {e}")
+            logger.error(f"[INVOICE] Raw response: {raw_response}")
+
+            # Retornar estructura básica con texto raw
+            return {
+                "tipo_documento": "factura",
+                "error": "No se pudo parsear JSON automáticamente",
+                "raw_text": raw_response,
+                "raw_extracted_text": extracted_text if content_type == "application/pdf" else "",
+                "empresa_emisora": "Detectado automáticamente",
+                "observaciones": "Requiere revisión manual - Error en extracción automática"
+            }
+
+    except Exception as e:
+        logger.error(f"[INVOICE] Error in processing: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error procesando archivo: {str(e)}")
+
+
+# Función auxiliar para extraer texto de PDFs
+async def extract_text_from_pdf(pdf_data: bytes) -> str:
+    """
+    Extrae texto de un archivo PDF usando pdfplumber para mejor manejo de tablas.
+    """
+    try:
+        import pdfplumber
+        import io
+
+        # Crear objeto de archivo en memoria
+        pdf_file = io.BytesIO(pdf_data)
+
+        extracted_text = ""
+
+        with pdfplumber.open(pdf_file) as pdf:
+            for page_num, page in enumerate(pdf.pages):
+                logger.info(f"[PDF] Procesando página {page_num + 1}")
+
+                # Extraer texto de la página
+                page_text = page.extract_text()
+                if page_text:
+                    extracted_text += f"\n--- PÁGINA {page_num + 1} ---\n"
+                    extracted_text += page_text
+
+                # Intentar extraer tablas si las hay
+                tables = page.extract_tables()
+                if tables:
+                    extracted_text += f"\n--- TABLAS PÁGINA {page_num + 1} ---\n"
+                    for table_num, table in enumerate(tables):
+                        extracted_text += f"\nTabla {table_num + 1}:\n"
+                        for row in table:
+                            if row:  # Evitar filas vacías
+                                row_text = " | ".join([str(cell) if cell else "" for cell in row])
+                                extracted_text += row_text + "\n"
+
+        if not extracted_text.strip():
+            # Si pdfplumber no pudo extraer texto, intentar con pymupdf como fallback
+            logger.warning("[PDF] pdfplumber no extrajo texto, intentando con pymupdf...")
+            extracted_text = await extract_text_with_pymupdf(pdf_data)
+
+        return extracted_text.strip()
+
+    except Exception as e:
+        logger.error(f"[PDF] Error extracting text with pdfplumber: {str(e)}")
+        # Fallback a pymupdf
+        try:
+            return await extract_text_with_pymupdf(pdf_data)
+        except Exception as fallback_error:
+            logger.error(f"[PDF] Error en fallback pymupdf: {str(fallback_error)}")
+            raise HTTPException(status_code=500, detail=f"Error extrayendo texto del PDF: {str(e)}")
+
+
+# Función fallback para extraer texto con pymupdf
+async def extract_text_with_pymupdf(pdf_data: bytes) -> str:
+    """
+    Extrae texto de un PDF usando pymupdf como fallback.
+    """
+    try:
+        import fitz  # pymupdf
+        import io
+
+        # Abrir PDF desde bytes
+        pdf_document = fitz.open(stream=pdf_data, filetype="pdf")
+
+        extracted_text = ""
+
+        for page_num in range(len(pdf_document)):
+            page = pdf_document[page_num]
+            page_text = page.get_text()
+
+            if page_text.strip():
+                extracted_text += f"\n--- PÁGINA {page_num + 1} ---\n"
+                extracted_text += page_text
+
+        pdf_document.close()
+
+        if not extracted_text.strip():
+            raise ValueError("No se pudo extraer texto del PDF - posiblemente sea un PDF escaneado")
+
+        return extracted_text.strip()
+
+    except Exception as e:
+        logger.error(f"[PDF] Error with pymupdf: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error extrayendo texto con pymupdf: {str(e)}")
 
 # Función para procesar texto con OpenAI
 async def process_with_openai(user_input: str) -> str:
@@ -463,6 +743,41 @@ async def set_session_email(session_id: str, request: SessionEmailRequest):
         "email": request.email,
         "message": "Email asociado exitosamente a la sesión"
     }
+
+@app.post("/api/invoice/extract", response_model=InvoiceExtractionResponse)
+async def extract_invoice_data(invoice_file: UploadFile = File(...)):
+    """
+    Extrae datos financieros de una factura usando OpenAI Vision API.
+    """
+    if not OPENAI_API_KEY:
+        raise HTTPException(status_code=500, detail="OpenAI API key not configured")
+
+    # Verificar tipo de archivo
+    allowed_types = ["image/jpeg", "image/png", "image/jpg", "application/pdf"]
+    if invoice_file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Tipo de archivo no soportado. Permitidos: {', '.join(allowed_types)}"
+        )
+
+    try:
+        # Leer el archivo
+        file_data = await invoice_file.read()
+
+        # Procesar archivo (PDF o imagen)
+        extracted_data = await process_invoice_with_vision(file_data, invoice_file.content_type)
+
+        logger.info(f"[INVOICE] Datos extraídos exitosamente de {invoice_file.filename}")
+
+        return InvoiceExtractionResponse(
+            success=True,
+            extracted_data=extracted_data,
+            message=f"Datos extraídos exitosamente de {invoice_file.filename}"
+        )
+
+    except Exception as e:
+        logger.error(f"[INVOICE] Error extracting data: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error extrayendo datos: {str(e)}")
 
 @app.post("/api/stt/transcribe", response_model=STTResponse)
 async def transcribe_audio(audio_file: UploadFile = File(...)):

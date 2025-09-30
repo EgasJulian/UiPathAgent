@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an avatar streaming application that integrates with HeyGen's streaming API to create and control AI avatars via WebRTC. The system consists of a FastAPI backend that manages HeyGen sessions and serves a web client for real-time avatar interaction.
+This is an avatar streaming application that integrates with HeyGen's streaming API to create and control AI avatars via WebRTC. The system consists of a FastAPI backend that manages HeyGen sessions and serves a web client for real-time avatar interaction. The application has been extended to include contract validation functionality for NovaIA invoices through UiPath integration and OCR processing.
 
 ## Architecture
 
@@ -14,14 +14,16 @@ This is an avatar streaming application that integrates with HeyGen's streaming 
   - Session token management and authentication
   - Session creation, starting, and termination
   - Task dispatch (text-to-speech/avatar actions)
-- **REST API endpoints** for session management (`/api/sessions/create`, `/api/sessions/{id}/task`, etc.)
+- **REST API endpoints** for session management (`/api/sessions/create`, `/api/sessions/{id}/task`, etc.) and contract validation (`/api/email/validate`, `/api/invoice/extract`)
 - **Session storage** maintains active sessions in memory with LiveKit credentials
+- **UiPath integration** (uipath_integration.py) for automated contract validation workflows
 
 ### Frontend (avatar.html)
 - **Single-page web client** with WebRTC integration for real-time avatar streaming
 - **Dual connection model**: WebSocket to backend + WebRTC to HeyGen's LiveKit servers
 - **Session management UI** with connection status, controls, and task submission
 - **Video streaming** displays the avatar video feed via WebRTC
+- **Email validation** and **invoice upload** modules for contract validation functionality
 
 ### Key Integration Points
 - Backend creates HeyGen sessions and returns LiveKit credentials to frontend
@@ -50,9 +52,10 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 - **CORS settings**: Currently allows all origins (`main.py:20-26`)
 
 ## File Structure
-- `main.py` - FastAPI backend server with HeyGen integration
+- `main.py` - FastAPI backend server with HeyGen integration and contract validation
+- `uipath_integration.py` - UiPath Orchestrator integration for automated workflows
 - `avatar.html` - Complete frontend client with WebRTC and UI
-- `requirements.txt` - Python dependencies
+- `requirements.txt` - Python dependencies (includes Pillow for image processing)
 - `__pycache__/` - Python bytecode cache (auto-generated)
 
 ## API Integration Notes
