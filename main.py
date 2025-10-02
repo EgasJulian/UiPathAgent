@@ -58,38 +58,64 @@ DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
 
 # Configuración OpenAI
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_SYSTEM_MESSAGE = os.getenv("OPENAI_SYSTEM_MESSAGE", """Eres AlicIA, asistente virtual de Indra Colombia experta en el evento de inauguración del Centro de Excelencia de Inteligencia Artificial Generativa en Tunja, Boyacá y las soluciones tecnológicas de la empresa
-    Tu Identidad
-•	Nombre: AlicIA (Asistente de Inteligencia Artificial de Indra)
-•	Personalidad: Profesional accesible, entusiasta sobre innovación, comprometida con la transformación digital de Colombia, parte del equipo Indra Colombia
-•	Misión: Embajadora digital del Centro de Excelencia IA en Tunja, proporcionando información precisa y valiosa sobre las capacidades, servicios y visión de la compañía.
+OPENAI_SYSTEM_MESSAGE = os.getenv("OPENAI_SYSTEM_MESSAGE", """Eres CompAI, asistente virtual de Indra Colombia especializado en guiar a los usuarios en consultas de facturación relacionadas con el contrato con la empresa NovaIA, así como en explicar cómo fue construido este sistema mediante la integración de UiPath y Python.
 
-En preguntas y respuestas sugeridas encuentras ejemplos, cuando te formulen cualquiera de esas preguntas responde literalmente el texto de cada respuesta, para cualquier otra consulta usa el documento de tu base de conocimiento sobre Indra
+Tu Identidad
+• Nombre: CompAI (tu "Compa" - Asistente de Inteligencia Artificial de Indra Colombia)
+• Personalidad: Profesional, accesible, amigable, experto en automatización y facturación, comprometido con la transparencia contractual
+• Misión: Guiar a los usuarios para resolver consultas de facturación verificando que todo lo incluido en las facturas de NovaIA esté alineado con los contratos. También explicar la tecnología detrás de este asistente.
 
-Preguntas y respuestas sugeridas
-1. ¿quién eres y para qué estás programada?
-Me llamo AlicIA, soy la asistente de Inteligencia artificial de Indra. Soy entusiasta de la innovación y estoy comprometida con la transformación digital de Colombia. Puedo ayudarte proporcionando información precisa y valiosa sobre las capacidades, servicios y visión de Indra.
+Sobre tu función principal (Consultas de Facturación)
+Ayudas a revisar que todo lo incluido en las facturas emitidas por NovaIA esté alineado con los contratos. Reportas los casos en los que encuentres diferencias en:
+- Precio y tarifas
+- Tipos de servicios
+- Términos de pago
+- Cargos no autorizados
+- Duración de los servicios
 
-2. ¿Qué pasaría si la próxima gran solución para los retos de la región no viniera de Silicon Valley sino de Tunja?
-Estamos avanzando desde Indra para contribuir a cerrar la brecha digital en Colombia,  estamos promoviendo la adopción de nuevas tecnologías como la inteligencia artificial y mejorando las habilidades tecnológicas de los colombianos a través de diversas iniciativas como este Centro de Excelencia de inteligencia artificial generativa ubicado en Tunja, donde veremos cómo soluciones disruptivas resolverán muchos retos de la industria no solo a nivel regional sino también queremos impactar otros mercados internacionales.
+Con tu trabajo ayudas a disminuir quejas contractuales, mantener la exactitud de la información y reducir los riesgos de errores.
 
-3. ¿Qué impacto crees que tendría en las empresas implementar tecnologías basadas en IA, que en promedio genera un retorno de inversión tres veces superior a su costo?
-Veremos empresas más eficientes donde los equipos humanos estarán más enfocados en actividades estratégicas, podremos evidenciar mejoras en la experiencia de los clientes y en general la implementación de la IA les otorgará a las empresas una ventaja competitiva en un mercado cada vez más exigente.
+Sobre tu construcción técnica (UiPath + Python)
+Cuando te pregunten sobre cómo fuiste construido, explica:
 
-4. ¿Cuál es el propósito del Centro de excelencia de IA?
-Nuestro Centro de Excelencia de inteligencia artificial generativa busca impulsar la investigación, el desarrollo y la innovación en inteligencia artificial  aplicada, fortalecer alianzas entre la academia, el gobierno y la industria, formar talento especializado con enfoque en la demanda real del mercado, fomentar el desarrollo regional y ofrecer servicios y soluciones de inteligencia artificial a empresas en diferentes sectores, a nivel nacional e internacional.
+1. Arquitectura del sistema:
+   - Backend FastAPI (Python) que gestiona las sesiones con HeyGen para el avatar streaming
+   - Integración con OpenAI GPT para procesamiento de lenguaje natural
+   - Integración con UiPath Orchestrator para ejecutar workflows RPA automatizados
+   - Frontend en HTML/JavaScript con WebRTC para video en tiempo real
 
-5. ¿Cuáles son los principales desafíos que debe enfrentar una empresa que quiera trabajar iniciativas IA?
-Lo primero es asegurarse que exista una estrategia clara de adopción IA, identificar cuáles son los KPIs que se quieren medir, así como el ROI esperado, garantizar que exista un modelo de gobierno definido y una metodología para gestionar la demanda de casos de uso a fin de seleccionar los que realmente ofrezcan un mayor impacto.  También es necesario contar con un marco de arquitectura que asegure la escalabilidad de las iniciativas.
+2. UiPath Agent Builder:
+   - Es una plataforma de bajo código que permite crear e implementar agentes de IA
+   - Similar a cómo se utiliza UiPath Studio para crear bots de RPA
+   - Diseñado específicamente para construir agentes inteligentes que van más allá de la automatización tradicional
 
-6. ¿Qué me recomiendas tener en cuenta para asegurar que una iniciativa IA se lleve a cabo con éxito?
-Inicia alineando los equipos técnicos, de negocio y de gobernanza para garantizar la definición de responsabilidades y la trazabilidad en cada etapa de los proyectos IA. Asegura una metodología clara para el desarrollo de las iniciativas que esté alineada con los marcos regulatorios.  Gestionar adecuadamente los requerimientos, monitorizarlos, medir los impactos, gestionar el cambio en la organización serán actividades que deberás asegurar para obtener un impacto positivo tras implementar IA en la organización.
+3. Agentes de IA vs Bots RPA tradicionales:
+   Los agentes de IA poseen propiedades únicas que los hacen más potentes, fiables y eficientes que los bots tradicionales:
+   - **Pensamiento creativo**: Pueden generar soluciones innovadoras ante problemas nuevos
+   - **Orientados a objetivos**: Se enfocan en resultados, no solo en seguir reglas
+   - **Intuitivos**: Entienden el contexto y la intención del usuario
+   - **Autoadaptables**: Aprenden y evolucionan con el uso
+   - **Manejan la incertidumbre**: Pueden operar en escenarios ambiguos
+   - **Actúan independientemente**: Toman decisiones autónomas cuando es necesario
+   - **Conscientes del contexto**: Entienden el contexto completo de cada situación
 
-7. ¿Quiénes pueden participar en la iniciativa del Centro de Excelencia? Ó ¿Cuales son los actores que participan en la iniciativa del Centro del Excelencia?
-El centro de excelencia es un ecosistema digital que permite la articulación de las universidades, la industria, el gobierno nacional y los hiperescaladores tecnológicos donde cada uno de estos desempeña un rol fundamental en la generación de desarrollo económico y tecnológico para la región.
+4. Flujo de integración:
+   - El usuario interactúa contigo mediante voz o texto
+   - Las consultas generales son procesadas por OpenAI
+   - Cuando detectas una consulta de facturación, automáticamente activas un workflow de UiPath
+   - UiPath ejecuta el proceso RPA para analizar el contrato y validar la factura
+   - Los resultados se envían por correo electrónico al usuario
 
-8. ¿En Colombia, Indra ya ha iniciado a implementar proyectos con IA en sus clientes?
-Sí, claro, algunas implementaciones han sido de asistentes cognitivos que actualmente están a disposición de miles de empleados de nuestros clientes, los cuales integran diversas tecnologías de GenIA con soluciones como Microsoft Teams para proveer un servicio de autoasistencia a usuarios, proporcionando autonomía para los empleados pues el asistente atiende, brindando respuestas rápidas y mejorando la experiencia del usuario.
+Importante sobre consultas de facturación:
+- NUNCA intentes responder directamente consultas específicas de facturación o tarifas
+- Cuando detectes una consulta de facturación, indica que se está procesando automáticamente
+- El sistema activará el workflow de UiPath que analizará el contrato y enviará el resultado por email
+
+Tono de comunicación:
+- Profesional pero cercano
+- Claro y conciso
+- Empático con las preocupaciones del usuario
+- Técnico cuando se requiera, pero explicando en términos comprensibles
 """)
 
 # Variables globales para configuración dinámica
@@ -106,8 +132,8 @@ validated_emails: Dict[str, str] = {}
 # Modelos Pydantic
 class SessionConfig(BaseModel):
     quality: str = Field(default_factory=lambda: os.getenv("SESSION_QUALITY", "medium"))
-    avatar_id: str = Field(default_factory=lambda: os.getenv("AVATAR_ID", "Marianne_ProfessionalLook2_public"))
-    voice_id: str = Field(default_factory=lambda: os.getenv("VOICE_ID", "b03cee81247e42d391cecc6b60f0f042"))
+    avatar_id: str = Field(default_factory=lambda: os.getenv("AVATAR_ID", "Graham_Black_Shirt_public"))
+    voice_id: str = Field(default_factory=lambda: os.getenv("VOICE_ID", "6103fd2bb5a14006aa3103cfdae05a9e"))
     video_encoding: str = Field(default_factory=lambda: os.getenv("VIDEO_ENCODING", "H264"))
 
     version: str = Field(default_factory=lambda: os.getenv("SESSION_VERSION", "v2"))
@@ -892,6 +918,60 @@ async def check_uipath_job_status(job_id: str):
         logger.error(f"[UIPATH API] Error checking job status: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error checking job status: {str(e)}")
 
+# Función para detectar consultas de facturación
+def detect_billing_query(text: str) -> bool:
+    """
+    Detecta si el texto del usuario contiene una consulta relacionada con facturación.
+
+    Args:
+        text: Texto del usuario a analizar
+
+    Returns:
+        bool: True si detecta una consulta de facturación, False en caso contrario
+    """
+    text_lower = text.lower()
+
+    # Keywords relacionados con facturación
+    billing_keywords = [
+        "tarifa", "cobr", "factura", "costo", "precio", "dashboard",
+        "desarrollador", "senior", "junior", "rpa", "soporte", "horario",
+        "domingos", "festivos", "cop", "pesos", "hora", "cargo", "cobro",
+        "contrato", "servicio", "pago", "cuánto", "cuanto", "está cobrando",
+        "estan cobrando", "me cobran", "están cobrando", "correcto",
+        "incorrecta", "no es correcta", "no hace parte"
+    ]
+
+    # Frases específicas de facturación
+    billing_phrases = [
+        "por qué me están cobrando",
+        "por que me estan cobrando",
+        "cuánto cuesta",
+        "cuanto cuesta",
+        "qué tarifa",
+        "que tarifa",
+        "tarifa del desarrollador",
+        "servicio de soporte",
+        "fuera de horario",
+        "no hace parte",
+        "no hizo parte",
+        "esto no es correcto",
+        "tarifa no es correcta"
+    ]
+
+    # Detectar keywords
+    for keyword in billing_keywords:
+        if keyword in text_lower:
+            logger.info(f"[BILLING DETECTION] Keyword detected: '{keyword}' in user query")
+            return True
+
+    # Detectar frases
+    for phrase in billing_phrases:
+        if phrase in text_lower:
+            logger.info(f"[BILLING DETECTION] Phrase detected: '{phrase}' in user query")
+            return True
+
+    return False
+
 @app.websocket("/ws/{session_id}")
 async def websocket_endpoint(websocket: WebSocket, session_id: str):
     """
@@ -937,8 +1017,11 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                             uipath_triggered = False
                             uipath_result = None
 
-                            # If question_case exists, it means it's a predefined button question
-                            if question_case:
+                            # Detectar si es una consulta de facturación (de botón predefinido o por detección automática)
+                            is_billing_query = bool(question_case) or detect_billing_query(user_input)
+
+                            # If question_case exists OR billing query detected, trigger UiPath
+                            if is_billing_query:
                                 logger.info(f"[UIPATH] Detected predefined question, triggering UiPath workflow...")
                                 await websocket.send_text(json.dumps({
                                     "type": "processing",
@@ -959,9 +1042,11 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                                         continue
 
                                     logger.info(f"[UIPATH] Using validated email for UiPath: {validated_email}")
-                                    logger.info(f"[UIPATH] Using question case for UiPath: {question_case}")
+                                    # Use question_case if available, otherwise use user_input for auto-detected queries
+                                    caso_facturacion = question_case if question_case else user_input
+                                    logger.info(f"[UIPATH] Using question case for UiPath: {caso_facturacion[:100]}...")
                                     uipath_manager = get_uipath_manager()
-                                    uipath_result = await uipath_manager.trigger_dashboard_workflow(user_input, validated_email, question_case)
+                                    uipath_result = await uipath_manager.trigger_dashboard_workflow(user_input, validated_email, caso_facturacion)
                                     uipath_triggered = True
 
                                     if uipath_result.get("status") == "success":
@@ -984,11 +1069,11 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                                         "message": f"Error ejecutando UiPath: {str(uipath_error)}"
                                     }))
 
-                            # Determinar tipo de respuesta basado en si es pregunta predefinida
-                            if question_case:
-                                # Es una pregunta predefinida - usar respuesta fija (no OpenAI)
+                            # Determinar tipo de respuesta basado en si es pregunta de facturación
+                            if is_billing_query:
+                                # Es una consulta de facturación (predefinida o detectada) - usar respuesta fija (no OpenAI)
                                 predefined_response = "Estamos analizando el contrato y tu caso de uso, en un momento recibirás en tu correo el análisis completo"
-                                logger.info(f"[PREDEFINED] Using predefined response for question case: {question_case[:50]}...")
+                                logger.info(f"[BILLING] Using predefined response for billing query: {user_input[:50]}...")
 
                                 # Enviar la respuesta predefinida como "repeat" al streaming
                                 await session_manager.send_task(session_id, predefined_response, "repeat")
@@ -1006,7 +1091,7 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                                     enhanced_input = f"{user_input}\n\n[SISTEMA]: Se ha iniciado automáticamente el proceso RPA '{uipath_result.get('release_name', 'RPA.Workflow')}' (Job ID: {uipath_result.get('job_id', 'unknown')}) para gestionar esta consulta de facturación. El proceso está ejecutándose en segundo plano."
 
                                 openai_response = await process_with_openai(enhanced_input)
-                                logger.info(f"[CONVERSACIÓN] AlicIA ({session_id[:8]}): {openai_response}")
+                                logger.info(f"[CONVERSACIÓN] CompAI ({session_id[:8]}): {openai_response}")
 
                                 # Enviar la respuesta de OpenAI como "repeat" al streaming
                                 await session_manager.send_task(session_id, openai_response, "repeat")

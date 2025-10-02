@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlicIA - Asistente Virtual Indra CoE</title>
+    <title>CompAI - Asistente Virtual Indra CoE</title>
 
-    <!-- Favicon optimizado para AlicIA -->
+    <!-- Favicon optimizado para CompAI -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='faviconGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff007f'/><stop offset='50%25' style='stop-color:%2300d4ff'/><stop offset='100%25' style='stop-color:%23ff007f'/></linearGradient></defs><circle cx='16' cy='16' r='14' fill='url(%23faviconGrad)' opacity='0.15'/><circle cx='16' cy='16' r='11' fill='none' stroke='url(%23faviconGrad)' stroke-width='2'/><circle cx='16' cy='8' r='2' fill='url(%23faviconGrad)'/><circle cx='8' cy='14' r='1.5' fill='url(%23faviconGrad)'/><circle cx='24' cy='14' r='1.5' fill='url(%23faviconGrad)'/><circle cx='11' cy='22' r='1.5' fill='url(%23faviconGrad)'/><circle cx='21' cy='22' r='1.5' fill='url(%23faviconGrad)'/><circle cx='16' cy='24' r='2' fill='url(%23faviconGrad)'/><text x='16' y='20' text-anchor='middle' fill='url(%23faviconGrad)' font-family='Arial,sans-serif' font-size='8' font-weight='bold'>AI</text></svg>" type="image/svg+xml">
 
     <!-- Favicons adicionales para compatibilidad -->
@@ -97,13 +97,13 @@
             margin-bottom: 8px;
         }
 
-        .alicia-logo {
+        .compai-logo {
             animation: logoFloat 3s ease-in-out infinite alternate, logoGlow 2s ease-in-out infinite;
             filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
             transition: transform 0.3s ease;
         }
 
-        .alicia-logo:hover {
+        .compai-logo:hover {
             transform: scale(1.1);
             animation-duration: 1s;
         }
@@ -815,7 +815,7 @@
         }
 
         .conversation-entry.assistant {
-            border-left: 3px solid #ff007f; /* Rosa para AlicIA */
+            border-left: 3px solid #ff007f; /* Rosa para CompAI */
         }
 
         .conversation-speaker {
@@ -1084,7 +1084,7 @@
                 flex-direction: column;
             }
 
-            .alicia-logo {
+            .compai-logo {
                 width: 50px;
                 height: 50px;
             }
@@ -1176,7 +1176,7 @@
                 gap: 8px;
             }
 
-            .alicia-logo {
+            .compai-logo {
                 width: 45px;
                 height: 45px;
             }
@@ -1254,7 +1254,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-container">
-                <svg class="alicia-logo" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="compai-logo" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#ff007f;stop-opacity:1" />
@@ -1293,7 +1293,7 @@
                     <text x="30" y="35" text-anchor="middle" fill="url(#logoGradient)" font-family="Arial, sans-serif" font-size="12" font-weight="bold" filter="url(#glow)">AI</text>
                 </svg>
                 <div class="logo-text">
-                    <h1>AlicIA</h1>
+                    <h1>CompAI</h1>
                     <span class="subtitle">Asistente Virtual</span>
                 </div>
             </div>
@@ -1351,7 +1351,7 @@
                     <div class="conversation-content" id="conversationContent">
                         <div id="conversationContainer">
                             <div class="conversation-placeholder">
-                                <p>La conversación con AlicIA aparecerá aquí...</p>
+                                <p>La conversación con CompAI aparecerá aquí...</p>
                             </div>
                         </div>
                     </div>
@@ -1395,20 +1395,24 @@
                 </div>
 
                 <!-- TERCERA SECCIÓN: Consultas de Facturación -->
-                <div class="task-section">
-                    <h3>💰 Consultas de Facturación</h3>
+                <div class="conversation-section conversation-collapsed" id="billingSection">
+                    <div class="conversation-header" onclick="toggleBillingCollapse()">
+                        <h3 class="conversation-title">💰 Consultas de Facturación</h3>
+                        <span class="conversation-collapse-icon">▼</span>
+                    </div>
+                    <div class="conversation-content" id="billingContent">
+                        <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('¿Por qué me están cobrando un dashboard interactivo?. Esto no hace parte del proyecto')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
+                            ¿Por qué me están cobrando un dashboard interactivo?. Esto no hace parte del proyecto
+                        </button>
 
-                    <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('¿Por qué me están cobrando un dashboard interactivo?. Esto no hizo parte del trabajo')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
-                        ¿Por qué me están cobrando un dashboard interactivo?. Esto no hizo parte del trabajo
-                    </button>
+                        <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('La tarifa del desarrollador RPA senior que me están cobrando es de COP 90.000/ hora, esta tarifa no es correcta')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
+                            La tarifa del desarrollador RPA senior que me están cobrando es de COP 90.000/ hora, esta tarifa no es correcta
+                        </button>
 
-                    <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('La tarifa del desarrollador RPA senior que me están cobrando es de COP 90.000/ hora, esta tarifa no es correcta')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
-                        La tarifa del desarrollador RPA senior que me están cobrando es de COP 90.000/ hora, esta tarifa no es correcta
-                    </button>
-
-                    <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('Voy a necesitar servicios de soporte fuera de horario, los domingos y festivos, ¿qué tarifa se aplica?')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
-                        Voy a necesitar servicios de soporte fuera de horario, los domingos y festivos, ¿qué tarifa se aplica?
-                    </button>
+                        <button class="btn-primary question-btn" onclick="sendPredefinedQuestion('Voy a necesitar servicios de soporte fuera de horario, los domingos y festivos, ¿qué tarifa se aplica?')" style="margin-bottom: 15px; width: 100%; padding: 16px; white-space: normal; text-align: left; line-height: 1.4; min-height: auto;">
+                            Voy a necesitar servicios de soporte fuera de horario, los domingos y festivos, ¿qué tarifa se aplica?
+                        </button>
+                    </div>
                 </div>
 
                 <!-- CUARTA SECCIÓN: Validación de Facturas -->
@@ -1804,7 +1808,7 @@
                 
                 room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
                     if (track.kind === LivekitClient.Track.Kind.Video) {
-                        addLog("✅ Stream de video de AlicIA recibido.", 'success');
+                        addLog("✅ Stream de video de CompAI recibido.", 'success');
                         const element = track.attach();
                         const remoteVideo = document.getElementById('remoteVideo');
                         remoteVideo.srcObject = element.srcObject;
@@ -1842,7 +1846,7 @@
                     }
                     
                     if (track.kind === LivekitClient.Track.Kind.Audio) {
-                        addLog("✅ Stream de audio de AlicIA recibido.", 'success');
+                        addLog("✅ Stream de audio de CompAI recibido.", 'success');
                         const element = track.attach();
                         const remoteVideo = document.getElementById('remoteVideo');
                         // Para audio, necesitamos asegurar que el video element pueda reproducir audio
@@ -1891,7 +1895,7 @@
             return;
         }
 
-        addLog("Creando nueva sesión con AlicIA...", 'info');
+        addLog("Creando nueva sesión con CompAI...", 'info');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/sessions/create`, {
@@ -1964,12 +1968,12 @@
             } else if (message.type === 'processing') {
                 // Mostrar estado de procesamiento de OpenAI (solo log técnico)
                 addLog(`🤖 ${message.message}`, 'info');
-                setButtonProcessing('Procesando con AlicIA...');
+                setButtonProcessing('Procesando con CompAI...');
             } else if (message.type === 'task_sent') {
-                // Registrar solo la respuesta de AlicIA (el usuario ya se agregó en sendTask)
+                // Registrar solo la respuesta de CompAI (el usuario ya se agregó en sendTask)
                 if (message.openai_response) {
-                    // Agregar respuesta de AlicIA
-                    addConversationEntry('AlicIA', message.openai_response, 'assistant');
+                    // Agregar respuesta de CompAI
+                    addConversationEntry('CompAI', message.openai_response, 'assistant');
                 }
 
                 // Log técnico solo a consola
@@ -2182,7 +2186,7 @@
                 return;
             }
 
-            const welcomeText = "Hola! Soy AlicIA, asistente virtual de NovaIA, me dedico a revisar que todo lo incluido en las facturas emitidas por nuestros clientes esté alineado con los contratos. Reporto los casos en los que encuentre diferencias en precio, tipos de servicios, términos de pago, cargos no autorizados ó duración de los servicios. Con mi trabajo ayudo a disminuir quejas contractuales, mantener la exactitud de la información y reducir los riesgos de errores. ¿En que puedo ayudarte hoy?";
+            const welcomeText = "Hola! soy tu compa, el asistente virtual de NovaIA, me dedico a revisar que todo lo incluido en las facturas emitidas por nuestros clientes esté alineado con los contratos. Reporto los casos en los que encuentre diferencias en precio, tipos de servicios, términos de pago, cargos no autorizados ó duración de los servicios. Con mi trabajo ayudo a disminuir quejas contractuales, mantener la exactitud de la información y reducir los riesgos de errores. ¿En que puedo ayudarte hoy?";
 
             // Marcar como enviado para evitar duplicados
             welcomeMessageSent = true;
@@ -2197,7 +2201,7 @@
             }));
 
             // Agregar a la transcripción inmediatamente
-            addConversationEntry('AlicIA', welcomeText, 'assistant');
+            addConversationEntry('CompAI', welcomeText, 'assistant');
 
             // Log técnico
             addLog('👋 Mensaje de bienvenida enviado automáticamente', 'success');
@@ -2709,10 +2713,10 @@
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
                     const file = files[0];
-                    if (file.type.startsWith('image/')) {
+                    if (file.type.startsWith('image/') || file.type === 'application/pdf') {
                         processInvoiceFile(file);
                     } else {
-                        addLog('⚠️ Solo se permiten archivos de imagen (JPG, PNG)', 'warning');
+                        addLog('⚠️ Solo se permiten archivos de imagen (JPG, PNG) o PDF', 'warning');
                     }
                 }
             });
@@ -2939,7 +2943,7 @@
 
         // Inicialización
         window.addEventListener('load', async () => {
-            addLog('Cliente AlicIA iniciado', 'success');
+            addLog('Cliente CompAI iniciado', 'success');
             updateUI('idle');
 
             // Deshabilitar botones de preguntas hasta que se valide email
@@ -2961,6 +2965,12 @@
         // Función para colapsar/expandir conversación
         function toggleConversationCollapse() {
             const section = document.getElementById('conversationSection');
+            section.classList.toggle('conversation-collapsed');
+        }
+
+        // Función para colapsar/expandir consultas de facturación
+        function toggleBillingCollapse() {
+            const section = document.getElementById('billingSection');
             section.classList.toggle('conversation-collapsed');
         }
 
