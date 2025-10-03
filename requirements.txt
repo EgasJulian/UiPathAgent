@@ -5,7 +5,7 @@ requests
 pydantic
 python-multipart
 aiofiles
-deepgram-sdk==3.14.0
+deepgram-sdk<5.0.0
 openai
 python-dotenv
 Pillow
