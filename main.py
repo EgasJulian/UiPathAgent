@@ -10,6 +10,7 @@ import json
 import logging
 from datetime import datetime
 import uuid
+#deepgram actualizó y puede traer problemas de compatibilidad
 from deepgram import DeepgramClient, PrerecordedOptions
 import tempfile
 import os
