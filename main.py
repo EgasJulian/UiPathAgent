@@ -705,9 +705,11 @@ async def send_session_task(session_id: str, task: TaskRequest):
 @app.delete("/api/sessions/{session_id}")
 async def close_heygen_session(session_id: str):
     """Cierra una sesión activa en HeyGen."""
+    # Hacer endpoint idempotente - no retornar error si la sesión ya fue cerrada
     if session_id not in active_sessions:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
+        logger.info(f"[TÉCNICO] Sesión {session_id} ya fue cerrada previamente")
+        return {"status": "already_closed", "session_id": session_id}
+
     await session_manager.close_session(session_id)
     del active_sessions[session_id]
     logger.info(f"[TÉCNICO] Sesión cerrada y eliminada: {session_id}")
@@ -1138,10 +1140,9 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                             }))
                 
                 elif message.get("type") == "close":
-                    # Cerrar sesión
+                    # Cerrar sesión en HeyGen pero NO eliminar de active_sessions
+                    # El DELETE endpoint se encargará de eliminarla
                     await session_manager.close_session(session_id)
-                    if session_id in active_sessions:
-                        del active_sessions[session_id]
                     logger.info(f"[TÉCNICO] Sesión cerrada desde WebSocket: {session_id}")
                     break
                     

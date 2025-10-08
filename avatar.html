@@ -1865,7 +1865,10 @@
                 
                 room.on(LivekitClient.RoomEvent.Disconnected, () => {
                     addLog("Conexión de video cerrada", 'info');
-                    updateUI('session_created');
+                    // Solo actualizar UI si la desconexión NO es intencional (cleanup() setea currentSessionId a null)
+                    if (currentSessionId !== null) {
+                        updateUI('session_created');
+                    }
                 });
                 
                 // Conectar al room
