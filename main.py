@@ -57,7 +57,7 @@ HEYGEN_BASE_URL = os.getenv("HEYGEN_BASE_URL", "https://api.heygen.com/v1")
 # Configuración Deepgram
 DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
 
-# Configuración OpenAI
+# Configuración OpenAI para Compa
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_SYSTEM_MESSAGE = os.getenv("OPENAI_SYSTEM_MESSAGE", """Eres CompAI, asistente virtual de Indra Colombia especializado en guiar a los usuarios en consultas de facturación relacionadas con el contrato con la empresa NovaIA, así como en explicar cómo fue construido este sistema mediante la integración de UiPath y Python.
 
