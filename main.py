@@ -139,6 +139,8 @@ class SessionConfig(BaseModel):
 
     version: str = Field(default_factory=lambda: os.getenv("SESSION_VERSION", "v2"))
     knowledge_base_id: str = Field(default_factory=lambda: os.getenv("KNOWLEDGE_BASE_ID", "197b84d8f4534ba68b0408bdaac78947"))
+    disable_idle_timeout: bool = Field(default_factory=lambda: os.getenv("DISABLE_IDLE_TIMEOUT", "False").lower() == "true")
+    activity_idle_timeout: int = Field(default_factory=lambda: int(os.getenv("ACTIVITY_IDLE_TIMEOUT", "240")))
 
 class TaskRequest(BaseModel):
     text: str
@@ -236,7 +238,9 @@ class HeyGenSessionManager:
             "voice": {"voice_id": config.voice_id, "rate": 1.1},
             "version": config.version,
             "knowledge_base_id": config.knowledge_base_id, #adding context
-            "video_encoding": config.video_encoding
+            "video_encoding": config.video_encoding,
+            "disable_idle_timeout": config.disable_idle_timeout,
+            "activity_idle_timeout": config.activity_idle_timeout
         }
         try:
             response = requests.post(url, json=payload, headers=auth_headers)
@@ -277,6 +281,12 @@ class HeyGenSessionManager:
             logger.error(f"Status code: {getattr(e.response, 'status_code', 'N/A')}")
             if hasattr(e.response, 'text'):
                 logger.error(f"Respuesta HeyGen: {e.response.text}")
+
+            # Detectar si es un error de sesión expirada o inválida (400 BAD REQUEST)
+            if hasattr(e.response, 'status_code') and e.response.status_code == 400:
+                logger.warning(f"Sesión {session_id} parece estar expirada o inválida")
+                raise HTTPException(status_code=400, detail="Session expired or invalid")
+
             raise HTTPException(status_code=500, detail=f"Error sending task: {str(e)}")
 
     async def close_session(self, session_id: str) -> dict:
@@ -1109,6 +1119,26 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                             }))
 
                             logger.info(f"[TÉCNICO] Tarea completada exitosamente para sesión {session_id[:8]}")
+                        except HTTPException as http_exc:
+                            # Manejar específicamente sesiones expiradas
+                            if http_exc.status_code == 400 and "Session expired" in str(http_exc.detail):
+                                logger.warning(f"[TÉCNICO] Sesión expirada detectada: {session_id[:8]}")
+                                # Marcar sesión como expirada
+                                if session_id in active_sessions:
+                                    active_sessions[session_id]["status"] = "expired"
+
+                                # Enviar mensaje específico de sesión expirada
+                                await websocket.send_text(json.dumps({
+                                    "type": "session_expired",
+                                    "message": "Tu sesión ha expirado por inactividad. Haz clic en 'Crear Sesión' para iniciar una nueva."
+                                }))
+                            else:
+                                # Otro tipo de HTTPException
+                                logger.error(f"[TÉCNICO] HTTPException procesando tarea para sesión {session_id[:8]}: {str(http_exc.detail)}")
+                                await websocket.send_text(json.dumps({
+                                    "type": "error",
+                                    "message": f"Error: {str(http_exc.detail)}"
+                                }))
                         except Exception as e:
                             logger.error(f"[TÉCNICO] Error procesando tarea para sesión {session_id[:8]}: {str(e)}")
                             await websocket.send_text(json.dumps({

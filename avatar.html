@@ -1297,7 +1297,7 @@
                     <span class="subtitle">Asistente Virtual</span>
                 </div>
             </div>
-            <p>Agentic Automation usando UiPath - Indra Colombia</p>
+            <p>Agentic Automation - Indra Colombia</p>
         </div>
 
         <div class="main-content">
@@ -1588,6 +1588,16 @@
                     notification.parentNode.removeChild(notification);
                 }
             }, 4000);
+        }
+
+        // Manejar sesión expirada - limpiar UI y estado
+        function handleSessionExpired() {
+            addLog('⏰ Limpiando sesión expirada y restaurando UI...', 'info');
+
+            // Usar la función cleanup() existente que hace toda la limpieza necesaria
+            cleanup();
+
+            addLog('✅ UI restaurada - Puedes crear una nueva sesión', 'success');
         }
 
         // Ocultar placeholder cuando comience la conversación
@@ -1988,6 +1998,13 @@
                 addLog(`❌ ${message.message}`, 'error');
                 // Re-habilitar botón en caso de error
                 resetButtonState();
+            } else if (message.type === 'session_expired') {
+                // Manejar sesión expirada
+                addLog(`⏰ ${message.message}`, 'error');
+                // Mostrar notificación al usuario en esquina superior derecha
+                showCriticalError(message.message);
+                // Limpiar estado y UI automáticamente
+                handleSessionExpired();
             } else {
                 addLog(`📨 ${message.type}: ${message.message || 'Sin mensaje'}`, 'info');
             }
