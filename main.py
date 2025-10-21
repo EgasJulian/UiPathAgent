@@ -130,6 +130,14 @@ active_sessions: Dict[str, dict] = {}
 # Almacenamiento de emails validados por sesión
 validated_emails: Dict[str, str] = {}
 
+# Mensajes alternantes para respuestas de UiPath
+UIPATH_RESPONSES = [
+    "Estoy revisando tu solicitud, te enviaré el análisis a tu correo.",
+    "En un momento te enviaré un correo con el análisis.",
+    "Estoy analizando tu caso, te enviaré la conclusión al correo"
+]
+uipath_response_counter = 0  # Contador para alternar mensajes
+
 # Modelos Pydantic
 class SessionConfig(BaseModel):
     quality: str = Field(default_factory=lambda: os.getenv("SESSION_QUALITY", "medium"))
@@ -1085,8 +1093,10 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
                             # Determinar tipo de respuesta basado en si es pregunta de facturación
                             if is_billing_query:
                                 # Es una consulta de facturación (predefinida o detectada) - usar respuesta fija (no OpenAI)
-                                predefined_response = "Estamos analizando el contrato y tu caso de uso, en un momento recibirás en tu correo el análisis completo"
-                                logger.info(f"[BILLING] Using predefined response for billing query: {user_input[:50]}...")
+                                global uipath_response_counter
+                                predefined_response = UIPATH_RESPONSES[uipath_response_counter % 3]
+                                uipath_response_counter += 1
+                                logger.info(f"[BILLING] Using predefined response #{(uipath_response_counter-1) % 3 + 1} for billing query: {user_input[:50]}...")
 
                                 # Enviar la respuesta predefinida como "repeat" al streaming
                                 await session_manager.send_task(session_id, predefined_response, "repeat")
